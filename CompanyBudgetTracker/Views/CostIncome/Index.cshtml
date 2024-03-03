@@ -4,6 +4,13 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <button id="addIncomeBtn">Add Income</button>
-    <button id="addCostBtn">Add Cost</button>
+    <button id="addRecordBtn">Add New Cons / Income</button>
 </div>
+@section Scripts
+{
+    <script type="text/javascript">
+        document.getElementById('addRecordBtn').addEventListener('click', function () {
+            window.location.href = '@Url.Action("RedirectToNewRecord", "CostIncome")'
+        });
+    </script>
+}

@@ -2,11 +2,31 @@
     ViewData["Title"] = "Add New Cost / Income";
 }
 
-<div class="text-center">
+<style>
+    .form-element {
+        margin-bottom: 20px;
+        }
+</style>
+
+<div class="text-center form-element">
     <h1 class="display-4">Welcome</h1>
-    <div class="text-center">
-        <p>Name: </p>
-        <text></text>
+    <div class="text-center form-element">
+        <label>Name: </label>
+        <input id="transactionName" name="transactionName"/>
+        <label>Amount: </label>
+        <input id="amount" name="amount" type="number"/>
+        <select id="transactionType" name="transactionType">
+            <option id="costType">Cost</option>
+            <option id="incomeType">Income</option>
+        </select>
+        <div class="text-center form-element" style="margin-top: 10px">
+            <button>Select attachment</button>
+        </div>
     </div>
-    <button>Submit</button>
+    <div class="text-center form-element">
+        <button>Add New Record</button>
+    </div>    
+    <div class="text-center form-element">
+        <button>Submit</button>
+    </div>
 </div>
