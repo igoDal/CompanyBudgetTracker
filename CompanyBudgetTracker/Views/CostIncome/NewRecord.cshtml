@@ -1,4 +1,5 @@
-﻿@{
+﻿@using CompanyBudgetTracker.Controllers
+@{
     ViewData["Title"] = "Add New Cost / Income";
 }
 
@@ -24,9 +25,25 @@
         </div>
     </div>
     <div class="text-center form-element">
-        <button>Add New Record</button>
-    </div>    
-    <div class="text-center form-element">
-        <button>Submit</button>
+        <button id="submitBtn">Submit</button>
     </div>
 </div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        document.getElementById("submitBtn").addEventListener("click", function () {
+            window.location.href = '@Url.Action("Index", "CostIncome")';
+            
+            var data = {
+                transactionName: document.getElementById("transactionName").value,
+                amount: document.getElementById("amount").value,
+                transactionType: document.getElementById("transactionType").value
+                };
+            
+            //trigger save
+            
+            });
+        
+    </script>
+}
