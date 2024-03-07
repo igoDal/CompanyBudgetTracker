@@ -27,6 +27,13 @@ public class CostIncomeController : Controller
         return View("NewRecord");
     }
 
+    public IActionResult GetHistory()
+    {
+        var records = _context.CostIncomes.ToList();
+
+        return View("History", records);
+    }
+    
     /*[HttpPost]
     public async Task<IActionResult> SaveTransaction()
     {

@@ -1,0 +1,29 @@
+﻿@model IEnumerable<CompanyBudgetTracker.Models.CostIncomeModel>
+
+@{
+    ViewData["Title"] = "Cost / Income history";
+}
+
+<h2>@ViewData["Title"]]</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Cost</th>
+            <th>Income</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var record in Model)
+{
+        <tr>
+            <td>@record.Id</td>
+            <td>@record.Cost</td>
+            <td>@record.Income</td>
+            <td>@record.Date.ToShortDateString()</td>
+        </tr>
+}
+    </tbody>
+</table>
