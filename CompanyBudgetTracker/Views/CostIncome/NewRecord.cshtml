@@ -41,8 +41,21 @@
                 transactionType: document.getElementById("transactionType").value
                 };
             
-            //trigger save
-            
+            fetch('@Url.Action("SaveTransaction", "CostIncome")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Success: ', data);
+                        window.location.href = '@Url.Action("Index", "CostIncome")';
+                    })
+                    .catch((error) => {
+                        console.error('Error: ', error);
+                        });
             });
         
     </script>

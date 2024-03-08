@@ -1,4 +1,7 @@
 using CompanyBudgetTracker.Context;
+using CompanyBudgetTracker.Interfaces;
+using CompanyBudgetTracker.Repositories;
+using CompanyBudgetTracker.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<MyDbContext>( options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("MyDbConnection")));
+
+builder.Services.AddScoped<ICostIncomeService, CostIncomeService>();
+builder.Services.AddScoped<CostIncomeRepository>();
+
 
 var app = builder.Build();
 

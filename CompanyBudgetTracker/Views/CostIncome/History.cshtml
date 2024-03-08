@@ -10,9 +10,11 @@
     <thead>
         <tr>
             <th>ID</th>
-            <th>Cost</th>
-            <th>Income</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Amount</th>
             <th>Date</th>
+            <th>Attachment</th>
         </tr>
     </thead>
     <tbody>
@@ -20,9 +22,11 @@
 {
         <tr>
             <td>@record.Id</td>
-            <td>@record.Cost</td>
-            <td>@record.Income</td>
+            <td>@record.Name</td>
+            <td>@record.Type</td>
+            <td>@record.Amount</td>
             <td>@record.Date.ToShortDateString()</td>
+            <td>@record.Attachment</td>
         </tr>
 }
     </tbody>
