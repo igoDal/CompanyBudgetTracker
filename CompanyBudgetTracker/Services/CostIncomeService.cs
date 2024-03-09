@@ -16,8 +16,15 @@ public class CostIncomeService : ICostIncomeService
 
     public async Task SaveAsync(CostIncomeModel costIncome)
     {
+        try
+        {
+            await _repository.SaveAsync(costIncome);
 
-        await _repository.SaveAsync(costIncome);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
     
 }

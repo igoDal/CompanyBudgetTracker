@@ -45,13 +45,18 @@ public class CostIncomeController : Controller
     [HttpPost]
     public async Task<IActionResult> SaveTransaction([FromBody] CostIncomeModel model)
     {
-
-        if (ModelState.IsValid)
+        try
         {
-            await _costIncomeService.SaveAsync(model);
-            return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                await _costIncomeService.SaveAsync(model);
+                return RedirectToAction("Index");
+            }
         }
-
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
 
         return View("Index");
     }

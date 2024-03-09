@@ -11,5 +11,11 @@ public class MyDbContext : DbContext
     }
 
     public DbSet<CostIncomeModel> CostIncomes { get; set; }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<CostIncomeModel>().ToTable("CostIncome")
+            .Property(p => p.Id)
+            .ValueGeneratedOnAdd();;
+    }
 
 }

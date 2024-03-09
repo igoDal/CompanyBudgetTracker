@@ -15,15 +15,23 @@ public class CostIncomeRepository
 
     public async Task SaveAsync(CostIncomeModel costIncome)
     {
-        if (costIncome.Id == 0)
+        try
         {
-            _context.Add(costIncome);
-        }
-        else
-        {
-            _context.Update(costIncome);
+            if (costIncome.Id == 0)
+            {
+                _context.Add(costIncome);
+            }
+            else
+            {
+                _context.Update(costIncome);
+            }
+
+            await _context.SaveChangesAsync();
         }
 
-        await _context.SaveChangesAsync();
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 }

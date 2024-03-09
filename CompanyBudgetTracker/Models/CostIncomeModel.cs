@@ -1,7 +1,10 @@
-﻿namespace CompanyBudgetTracker.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CompanyBudgetTracker.Models;
 
 public class CostIncomeModel
 {
+    [Key]
     public int Id { get; set; }
     public string Name { get; set; }
     public string Type { get; set; }

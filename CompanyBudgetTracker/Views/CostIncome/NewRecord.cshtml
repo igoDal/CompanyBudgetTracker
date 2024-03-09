@@ -13,15 +13,18 @@
     <h1 class="display-4">Welcome</h1>
     <div class="text-center form-element">
         <label>Name: </label>
-        <input id="transactionName" name="transactionName"/>
+        <input id="transactionName" name="transactionName" type="text"/>
         <label>Amount: </label>
         <input id="amount" name="amount" type="number"/>
         <select id="transactionType" name="transactionType">
             <option id="costType">Cost</option>
             <option id="incomeType">Income</option>
         </select>
+        <label>Date: </label>
+        <input id="transactionDate" name="transactionDate" type="text"/>
         <div class="text-center form-element" style="margin-top: 10px">
             <button>Select attachment</button>
+            <input id="transactionAtt" name="transactionAtt" type="text"/>
         </div>
     </div>
     <div class="text-center form-element">
@@ -33,22 +36,31 @@
 {
     <script type="text/javascript">
         document.getElementById("submitBtn").addEventListener("click", function () {
-            window.location.href = '@Url.Action("Index", "CostIncome")';
+            //window.location.href = '@Url.Action("Index", "CostIncome")';
             
             var data = {
-                transactionName: document.getElementById("transactionName").value,
-                amount: document.getElementById("amount").value,
-                transactionType: document.getElementById("transactionType").value
+                Name: document.getElementById("transactionName").value,
+                Amount: document.getElementById("amount").value,
+                Type: document.getElementById("transactionType").value,
+                Date: document.getElementById("transactionDate").value,
+                Attachment: document.getElementById("transactionAtt").value,
                 };
+
+                
             
             fetch('@Url.Action("SaveTransaction", "CostIncome")', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(data),
-                    })
-                    .then(response => response.json())
+                body: JSON.stringify(data),
+            })
+                    .then(response => {
+                              if (!response.ok) {
+                                  throw new Error('Network response was not ok');
+                              }
+                              return response.json();
+                          })
                     .then(data => {
                         console.log('Success: ', data);
                         window.location.href = '@Url.Action("Index", "CostIncome")';
