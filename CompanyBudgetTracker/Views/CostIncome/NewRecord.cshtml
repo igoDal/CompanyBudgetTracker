@@ -9,66 +9,60 @@
         }
 </style>
 
-<div class="text-center form-element">
-    <h1 class="display-4">Welcome</h1>
+<form method="post" id="transactionForm" enctype="multipart/form-data" action="@Url.Action("SaveTransaction", "CostIncome")">
     <div class="text-center form-element">
-        <label>Name: </label>
-        <input id="transactionName" name="transactionName" type="text"/>
-        <label>Amount: </label>
-        <input id="amount" name="amount" type="number"/>
-        <select id="transactionType" name="transactionType">
-            <option id="costType">Cost</option>
-            <option id="incomeType">Income</option>
-        </select>
-        <label>Date: </label>
-        <input id="transactionDate" name="transactionDate" type="text"/>
-        <div class="text-center form-element" style="margin-top: 10px">
-            <button>Select attachment</button>
-            <input id="transactionAtt" name="transactionAtt" type="text"/>
+        <h1 class="display-4">Welcome</h1>
+        <div class="text-center form-element">
+            <label>Name: </label>
+            <input id="transactionName" name="transactionName" type="text"/>
+            <label>Amount: </label>
+            <input id="amount" name="amount" type="number"/>
+            <select id="transactionType" name="transactionType">
+                <option id="costType">Cost</option>
+                <option id="incomeType">Income</option>
+            </select>
+            <label>Date: </label>
+            <input id="transactionDate" name="transactionDate" type="date"/>
+            <div class="text-center form-element">
+                <label for="transactionAtt">Select attachment: </label>
+                <input id="transactionAtt" name="transactionAtt" type="file" onchange="updateLabel()" />
+            </div>
+        </div>
+        <div class="text-center form-element">
+            <button type="submit" id="submitBtn">Submit</button>
         </div>
     </div>
-    <div class="text-center form-element">
-        <button id="submitBtn">Submit</button>
-    </div>
-</div>
+</form>
 
 @section Scripts
 {
     <script type="text/javascript">
-        document.getElementById("submitBtn").addEventListener("click", function () {
-            //window.location.href = '@Url.Action("Index", "CostIncome")';
-            
-            var data = {
-                Name: document.getElementById("transactionName").value,
-                Amount: document.getElementById("amount").value,
-                Type: document.getElementById("transactionType").value,
-                Date: document.getElementById("transactionDate").value,
-                Attachment: document.getElementById("transactionAtt").value,
-                };
-
-                
-            
+        document.getElementById("submitBtn").addEventListener("click", function (event) {
+            event.preventDefault();
+        
+            var formData = new FormData();
+            formData.append('Name', document.getElementById("transactionName").value);
+            formData.append('Amount', document.getElementById("amount").value);
+            formData.append('Type', document.getElementById("transactionType").value);
+            formData.append('Date', document.getElementById("transactionDate").value);
+            formData.append('transactionAtt', document.getElementById("transactionAtt").files[0]);
+        
             fetch('@Url.Action("SaveTransaction", "CostIncome")', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    },
-                body: JSON.stringify(data),
+                body: formData,
             })
-                    .then(response => {
-                              if (!response.ok) {
-                                  throw new Error('Network response was not ok');
-                              }
-                              return response.json();
-                          })
-                    .then(data => {
-                        console.log('Success: ', data);
-                        window.location.href = '@Url.Action("Index", "CostIncome")';
-                    })
-                    .catch((error) => {
-                        console.error('Error: ', error);
-                        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
-        
+        });
     </script>
 }

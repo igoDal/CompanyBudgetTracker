@@ -43,11 +43,30 @@ public class CostIncomeController : Controller
     }
     
     [HttpPost]
-    public async Task<IActionResult> SaveTransaction([FromBody] CostIncomeModel model)
+    public async Task<IActionResult> SaveTransaction(CostIncomeModel model, IFormFile transactionAtt)
     {
+        if (transactionAtt != null && transactionAtt.Length > 0)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                await transactionAtt.CopyToAsync(memoryStream);
+                model.Attachment = memoryStream.ToArray(); 
+            }
+            model.AttachmentName = transactionAtt.FileName;
+            model.AttachmentType = transactionAtt.ContentType;
+        }
+        
         try
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                foreach(var error in errors)
+                {
+                    Console.WriteLine(error);
+                }
+            }
+            else if (ModelState.IsValid)
             {
                 await _costIncomeService.SaveAsync(model);
                 return RedirectToAction("Index");
