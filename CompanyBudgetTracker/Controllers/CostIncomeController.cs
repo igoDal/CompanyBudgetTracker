@@ -53,7 +53,7 @@ public class CostIncomeController : Controller
                 model.Attachment = memoryStream.ToArray(); 
             }
             model.AttachmentName = transactionAtt.FileName;
-            model.AttachmentType = transactionAtt.ContentType;
+            model.AttachmentContentType = transactionAtt.ContentType;
         }
         
         try
@@ -78,6 +78,21 @@ public class CostIncomeController : Controller
         }
 
         return View("Index");
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> DeleteTransaction(int id)
+    {
+        try
+        {
+            await _costIncomeService.DeleteAsync(id);
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error deleting transaction with ID {id}: {ex}");
+            return View("Error"); 
+        }
     }
     
 }
