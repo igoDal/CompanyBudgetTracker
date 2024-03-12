@@ -41,5 +41,11 @@ public class CostIncomeService : ICostIncomeService
             await _context.SaveChangesAsync();
         }
     }
+
+    public async Task UpdateAsync(int id)
+    {
+        //update record logic
+        await _context.SaveChangesAsync();
+    }
     
 }

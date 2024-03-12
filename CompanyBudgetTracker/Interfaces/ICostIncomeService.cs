@@ -4,6 +4,8 @@ namespace CompanyBudgetTracker.Interfaces;
 
 public interface ICostIncomeService
 {
-    public Task SaveAsync(CostIncomeModel costIncome);
+    Task SaveAsync(CostIncomeModel costIncome);
     Task DeleteAsync(int id);
+    Task UpdateAsync(int id);
+
 }
