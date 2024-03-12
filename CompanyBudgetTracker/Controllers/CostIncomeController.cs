@@ -74,7 +74,7 @@ public class CostIncomeController : Controller
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
+            _logger.LogError("ERR: " + ex);
         }
 
         return View("Index");

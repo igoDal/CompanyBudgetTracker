@@ -10,11 +10,13 @@ public class CostIncomeService : ICostIncomeService
 {
     private readonly CostIncomeRepository _repository;
     private readonly MyDbContext _context;
+    private readonly ILogger<CostIncomeService> _logger;
 
-    public CostIncomeService(CostIncomeRepository repository, MyDbContext context)
+    public CostIncomeService(CostIncomeRepository repository, MyDbContext context, ILogger<CostIncomeService> logger)
     {
         _repository = repository;
         _context = context;
+        _logger = logger;
     }
 
     public async Task SaveAsync(CostIncomeModel costIncome)
@@ -26,7 +28,7 @@ public class CostIncomeService : ICostIncomeService
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
+            _logger.LogError("ERR: " + ex);
         }
     }
 

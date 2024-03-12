@@ -10,9 +10,9 @@ public class CostIncomeModel
     public string Type { get; set; }
     public decimal Amount { get; set; }
     public DateTime Date { get; set; }
-    public byte[] Attachment { get; set; }
-    public string AttachmentName { get; set; }
-    public string AttachmentContentType { get; set; }
+    public byte[]? Attachment { get; set; }
+    public string? AttachmentName { get; set; }
+    public string? AttachmentContentType { get; set; }
     
 
 }
