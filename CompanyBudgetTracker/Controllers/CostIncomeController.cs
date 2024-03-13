@@ -35,9 +35,11 @@ public class CostIncomeController : Controller
         return View("NewRecord");
     }
 
-    public IActionResult GetHistory()
+    public IActionResult GetHistory(DateTime? startDate, DateTime? endDate)
     {
-        var records = _context.CostIncomes.ToList();
+        var records = _context.CostIncomes
+            .Where(record => (!startDate.HasValue || record.Date >= startDate) && (!endDate.HasValue || record.Date <= endDate))
+            .ToList();
 
         return View("History", records);
     }
