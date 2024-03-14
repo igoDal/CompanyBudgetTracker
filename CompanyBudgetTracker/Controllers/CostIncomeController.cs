@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using CompanyBudgetTracker.Models;
 using CompanyBudgetTracker.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CompanyBudgetTracker.Controllers;
 
@@ -35,10 +36,15 @@ public class CostIncomeController : Controller
         return View("NewRecord");
     }
 
-    public IActionResult GetHistory(DateTime? startDate, DateTime? endDate)
+    public IActionResult GetHistory(string? name, int? id, string? type, DateTime? startDate, DateTime? endDate)
     {
         var records = _context.CostIncomes
-            .Where(record => (!startDate.HasValue || record.Date >= startDate) && (!endDate.HasValue || record.Date <= endDate))
+            .Where(record => 
+                (name.IsNullOrEmpty() || record.Name.Contains(name)) &&
+                (!id.HasValue || record.Id == id) &&
+                (type.IsNullOrEmpty() || record.Name.Contains(type)) &&
+                (!startDate.HasValue || record.Date >= startDate) && 
+                (!endDate.HasValue || record.Date <= endDate))
             .ToList();
 
         return View("History", records);
