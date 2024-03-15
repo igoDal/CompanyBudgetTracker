@@ -38,16 +38,36 @@ public class CostIncomeController : Controller
 
     public IActionResult GetHistory(string? name, int? id, string? type, DateTime? startDate, DateTime? endDate)
     {
-        var records = _context.CostIncomes
+        var query = _context.CostIncomes.AsQueryable();
+        
+        if (id.HasValue)
+            query = query.Where(x => x.Id == id.Value);
+        if (!string.IsNullOrWhiteSpace(name))
+            query = query.Where(x => x.Name.Contains(name));
+        if (!string.IsNullOrWhiteSpace(type))
+            query = query.Where(x => x.Type.Contains(type));
+        if (startDate.HasValue)
+            query = query.Where(x => x.Date >= startDate.Value);
+        if (endDate.HasValue)
+            query = query.Where(x => x.Date <= endDate.Value);
+        
+        
+        /*var records = _context.CostIncomes
             .Where(record => 
                 (name.IsNullOrEmpty() || record.Name.Contains(name)) &&
                 (!id.HasValue || record.Id == id) &&
                 (type.IsNullOrEmpty() || record.Name.Contains(type)) &&
                 (!startDate.HasValue || record.Date >= startDate) && 
                 (!endDate.HasValue || record.Date <= endDate))
-            .ToList();
-
+            .ToList();*/
+        
+        var totalAmount = query.Sum(x => x.Amount);
+        
+        ViewData["TotalAmount"] = totalAmount;
+        var records = query.ToList();
         return View("History", records);
+
+        //return View("History", records);
     }
     
     [HttpPost]
