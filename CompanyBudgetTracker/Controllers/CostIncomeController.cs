@@ -36,16 +36,16 @@ public class CostIncomeController : Controller
         return View("NewRecord");
     }
 
-    public IActionResult GetHistory(string? name, int? id, string? type, DateTime? startDate, DateTime? endDate)
+    public IActionResult GetHistory(string? itemName, int? itemId, string? itemType, DateTime? startDate, DateTime? endDate)
     {
         var query = _context.CostIncomes.AsQueryable();
         
-        if (id.HasValue)
-            query = query.Where(x => x.Id == id.Value);
-        if (!string.IsNullOrWhiteSpace(name))
-            query = query.Where(x => x.Name.Contains(name));
-        if (!string.IsNullOrWhiteSpace(type))
-            query = query.Where(x => x.Type.Contains(type));
+        if (itemId.HasValue)
+            query = query.Where(x => x.Id == itemId.Value);
+        if (!string.IsNullOrWhiteSpace(itemName))
+            query = query.Where(x => x.Name.Contains(itemName));
+        if (!string.IsNullOrWhiteSpace(itemType))
+            query = query.Where(x => x.Type.Contains(itemType));
         if (startDate.HasValue)
             query = query.Where(x => x.Date >= startDate.Value);
         if (endDate.HasValue)
@@ -123,4 +123,14 @@ public class CostIncomeController : Controller
         }
     }
     
+    public IActionResult OpenAttachment(int attachmentId)
+    {
+        var attachment = _context.CostIncomes.FirstOrDefault(x => x.Id == attachmentId);
+        if (attachment == null)
+        {
+            return NotFound();
+        }
+
+        return File(attachment.Attachment, attachment.AttachmentContentType, attachment.AttachmentName);
+    }
 }

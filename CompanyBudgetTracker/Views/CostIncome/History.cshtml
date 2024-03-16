@@ -1,4 +1,5 @@
-﻿@model IEnumerable<CompanyBudgetTracker.Models.CostIncomeModel>
+﻿@using CompanyBudgetTracker.Controllers
+@model IEnumerable<CompanyBudgetTracker.Models.CostIncomeModel>
 
 @{
     ViewData["Title"] = "Cost / Income history";
@@ -22,6 +23,7 @@
         </div>
     </div>
     <button type="submit" class="btn btn-primary">Filter</button>
+    <button type="submit" class="btn btn-primary">Clear filters</button>
 </form>
 
 <table class="table">
@@ -32,9 +34,9 @@
         <th>Type</th>
         <th>Amount</th>
         <th>Date</th>
-        <th>Attachment</th>
         <th>AttachmentName</th>
         <th>AttachmentContentType</th>
+        <th>Open Attachment</th>
     </tr>
     </thead>
     <tbody>
@@ -46,9 +48,12 @@
             <td>@record.Type</td>
             <td>@record.Amount</td>
             <td>@record.Date.ToShortDateString()</td>
-            <td>@record.Attachment</td>
             <td>@record.AttachmentName</td>
             <td>@record.AttachmentContentType</td>
+            <td>
+                <a href="@Url.Action("OpenAttachment", "CostIncome", new { attachmentId = record.Id })" 
+                   id="openAttachment" class="btn btn-primary"> Open </a> 
+            </td>
         </tr>
     }
     <tr>
