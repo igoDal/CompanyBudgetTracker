@@ -42,10 +42,14 @@ public class CostIncomeService : ICostIncomeService
         }
     }
 
-    public async Task UpdateAsync(int id)
+    public async Task UpdateSettledStatusAsync(int id, bool settled)
     {
-        //update record logic
-        await _context.SaveChangesAsync();
+        var record = _context.CostIncomes.FirstOrDefault(x => x.Id == id);
+        if (record != null)
+        {
+            record.Settled = settled;
+            await _context.SaveChangesAsync();
+        }
     }
     
 }

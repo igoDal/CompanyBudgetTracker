@@ -34,4 +34,23 @@ public class CostIncomeRepository
             Console.WriteLine(ex);
         }
     }
+
+    public async Task UpdateAsync(CostIncomeModel costIncome)
+    {
+        try
+        {
+            if (costIncome.Id == 0)
+            {
+                throw new Exception("Id cannot be null");
+            }
+
+            _context.Update(costIncome);
+            await _context.SaveChangesAsync();
+        }
+        
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
 }

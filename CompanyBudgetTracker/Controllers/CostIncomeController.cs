@@ -133,4 +133,18 @@ public class CostIncomeController : Controller
 
         return File(attachment.Attachment, attachment.AttachmentContentType, attachment.AttachmentName);
     }
+
+    public async Task<IActionResult> Settle(int itemId, bool settled)
+    {
+        var record = _context.CostIncomes.FirstOrDefault(x => x.Id == itemId);
+
+        if (itemId == null)
+        {
+            return NotFound();
+        }
+
+        await _costIncomeService.UpdateSettledStatusAsync(itemId, settled);
+
+        return View("History");
+    }
 }

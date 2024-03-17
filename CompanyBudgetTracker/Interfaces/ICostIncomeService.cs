@@ -6,6 +6,6 @@ public interface ICostIncomeService
 {
     Task SaveAsync(CostIncomeModel costIncome);
     Task DeleteAsync(int id);
-    Task UpdateAsync(int id);
+    Task UpdateSettledStatusAsync(int id, bool settled);
 
 }

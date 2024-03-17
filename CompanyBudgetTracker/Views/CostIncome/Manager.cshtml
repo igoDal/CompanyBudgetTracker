@@ -1,0 +1,77 @@
+﻿@using CompanyBudgetTracker.Controllers
+@model IEnumerable<CompanyBudgetTracker.Models.CostIncomeModel>
+
+@{
+    ViewData["Title"] = "Cost / Income history";
+}
+
+<h2>@ViewData["History"]</h2>
+
+<form method="get" action="@Url.Action("GetHistory", "CostIncome")">
+    <div class="form-group">
+        <div class="filtering-class">
+            <label for="itemId">ID:</label>
+            <input type="number" id="itemId" name="itemId" class="form-control"/>
+            <label for="itemName">Name:</label>
+            <input type="text" id="itemName" name="itemName" class="form-control"/>
+            <label for="itemType">Type:</label>
+            <input type="text" id="itemType" name="itemType" class="form-control"/>
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate" name="startDate" class="form-control"/>
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate" name="endDate" class="form-control"/>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Filter</button>
+    <button type="submit" class="btn btn-primary">Clear filters</button>
+</form>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Amount</th>
+        <th>Date</th>
+        <th>AttachmentName</th>
+        <th>AttachmentContentType</th>
+        <th>Open Attachment</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var record in Model)
+    {
+        <tr>
+            <td>@record.Id</td>
+            <td>@record.Name</td>
+            <td>@record.Type</td>
+            <td>@record.Amount</td>
+            <td>@record.Date.ToShortDateString()</td>
+            <td>@record.AttachmentName</td>
+            <td>@record.AttachmentContentType</td>
+            <td>
+                <a href="@Url.Action("OpenAttachment", "CostIncome", new { attachmentId = record.Id })" 
+                   id="openAttachment" class="btn btn-primary"> Open </a> 
+            </td>
+            <td>
+                <a href="@Url.Action("Settle", "CostIncome", new { itemId = record.Id, settled = true })" 
+                   class="btn btn-primary"> Settle </a>
+
+            </td>
+        </tr>
+    }
+    <tr>
+        <td colspan="7" style="text-align: right;"><strong>Total:</strong></td>
+        <td>@ViewData["TotalAmount"]</td>
+    </tr>
+    </tbody>
+</table>
+
+<style>
+    .filtering-class {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+</style>

@@ -13,6 +13,7 @@ public class CostIncomeModel
     public byte[]? Attachment { get; set; }
     public string? AttachmentName { get; set; }
     public string? AttachmentContentType { get; set; }
+    public bool Settled { get; set; }
     
 
 }
