@@ -36,7 +36,7 @@
         <th>Date</th>
         <th>AttachmentName</th>
         <th>AttachmentContentType</th>
-        <th>Open Attachment</th>
+        <th>Settled</th>
     </tr>
     </thead>
     <tbody>
@@ -50,9 +50,21 @@
             <td>@record.Date.ToShortDateString()</td>
             <td>@record.AttachmentName</td>
             <td>@record.AttachmentContentType</td>
+            <td>@record.Settled</td>
             <td>
-                <a href="@Url.Action("OpenAttachment", "CostIncome", new { attachmentId = record.Id })" 
-                   id="openAttachment" class="btn btn-primary"> Open </a> 
+                <a href="@Url.Action("OpenAttachment", "CostIncome", new { attachmentId = record.Id })"
+                   id="openAttachment" class="btn btn-primary"> Open </a>
+            </td>
+            <td>
+                @if (!record.Settled)
+                                {
+                    <a href="@Url.Action("Settle", "CostIncome", new { itemId = record.Id, settled = true })"
+                       class="btn btn-primary"> Settle </a>
+                }
+                else
+                {
+                    <button class="btn btn-primary" disabled>Settle</button>
+                }
             </td>
         </tr>
     }

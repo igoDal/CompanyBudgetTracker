@@ -137,7 +137,7 @@ public class CostIncomeController : Controller
     public async Task<IActionResult> Settle(int itemId, bool settled)
     {
         var record = _context.CostIncomes.FirstOrDefault(x => x.Id == itemId);
-
+        
         if (itemId == null)
         {
             return NotFound();
@@ -145,6 +145,6 @@ public class CostIncomeController : Controller
 
         await _costIncomeService.UpdateSettledStatusAsync(itemId, settled);
 
-        return View("History");
+        return View("Index");
     }
 }
