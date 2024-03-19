@@ -5,10 +5,16 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <button id="addRecordBtn">Add New Cost / Income</button>
+    <button id="deleteRecordBtn">View History</button>
     <button id="viewHistoryBtn">View History</button>
 </div>
 @section Scripts
 {
+    <script type="text/javascript">
+        document.getElementById('deleteRecordBtn').addEventListener('click', function () {
+            window.location.href = '@Url.Action("DeleteRecord", "CostIncome")'
+        });
+    </script>
     <script type="text/javascript">
         document.getElementById('addRecordBtn').addEventListener('click', function () {
             window.location.href = '@Url.Action("RedirectToNewRecord", "CostIncome")'

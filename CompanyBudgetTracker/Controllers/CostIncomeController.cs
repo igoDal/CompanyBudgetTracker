@@ -51,23 +51,11 @@ public class CostIncomeController : Controller
         if (endDate.HasValue)
             query = query.Where(x => x.Date <= endDate.Value);
         
-        
-        /*var records = _context.CostIncomes
-            .Where(record => 
-                (name.IsNullOrEmpty() || record.Name.Contains(name)) &&
-                (!id.HasValue || record.Id == id) &&
-                (type.IsNullOrEmpty() || record.Name.Contains(type)) &&
-                (!startDate.HasValue || record.Date >= startDate) && 
-                (!endDate.HasValue || record.Date <= endDate))
-            .ToList();*/
-        
         var totalAmount = query.Sum(x => x.Amount);
         
         ViewData["TotalAmount"] = totalAmount;
         var records = query.ToList();
         return View("History", records);
-
-        //return View("History", records);
     }
     
     [HttpPost]
@@ -144,6 +132,18 @@ public class CostIncomeController : Controller
         }
 
         await _costIncomeService.UpdateSettledStatusAsync(itemId, settled);
+
+        return View("Index");
+    }
+
+    public async Task<IActionResult> DeleteRecord(int itemId)
+    {
+        if (itemId == null)
+        {
+            return NotFound();
+        }
+
+        await _costIncomeService.DeleteAsync(itemId);
 
         return View("Index");
     }
