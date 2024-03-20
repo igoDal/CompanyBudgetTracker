@@ -2,6 +2,7 @@ using CompanyBudgetTracker.Context;
 using CompanyBudgetTracker.Interfaces;
 using CompanyBudgetTracker.Repositories;
 using CompanyBudgetTracker.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -19,6 +20,10 @@ builder.Host.UseSerilog();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<MyDbContext>( options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("MyDbConnection")));
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<MyDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<ICostIncomeService, CostIncomeService>();
 builder.Services.AddScoped<CostIncomeRepository>();
@@ -39,6 +44,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
