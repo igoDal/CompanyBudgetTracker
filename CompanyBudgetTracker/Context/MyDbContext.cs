@@ -15,6 +15,8 @@ public class MyDbContext : IdentityDbContext<IdentityUser>
     public DbSet<CostIncomeModel> CostIncomes { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+        
         modelBuilder.Entity<CostIncomeModel>().ToTable("CostIncome")
             .Property(p => p.Id)
             .ValueGeneratedOnAdd();;
