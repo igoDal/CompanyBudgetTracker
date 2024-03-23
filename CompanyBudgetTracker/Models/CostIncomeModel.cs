@@ -14,6 +14,9 @@ public class CostIncomeModel
     public string? AttachmentName { get; set; }
     public string? AttachmentContentType { get; set; }
     public bool Settled { get; set; }
+    public int CategoryId { get; set; }
+    public CategoryModel Category { get; set; }
+    public ICollection<CostIncomeModelTag> CostIncomeModelTags { get; set; }
     
 
 }
