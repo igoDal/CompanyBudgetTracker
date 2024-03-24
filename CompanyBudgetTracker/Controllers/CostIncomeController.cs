@@ -59,7 +59,7 @@ public class CostIncomeController : Controller
     }
     
     [HttpPost]
-    public async Task<IActionResult> SaveTransaction(CostIncomeModel model, IFormFile transactionAtt)
+    public async Task<IActionResult> SaveTransaction(CostIncomeModel model, IFormFile transactionAtt, string tags)
     {
         if (transactionAtt != null && transactionAtt.Length > 0)
         {
@@ -84,6 +84,21 @@ public class CostIncomeController : Controller
             }
             else if (ModelState.IsValid)
             {
+                var tagNames = tags.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(t => t.Trim())
+                    .Distinct();
+
+                foreach (var tagName in tagNames)
+                {
+                    var tag = await _context.Tags.SingleOrDefaultAsync(t => t.Name == tagName);
+                    if (tag == null)
+                    {
+                        tag = new TagModel { Name = tagName };
+                        _context.Tags.Add(tag);
+                    }
+
+                    model.CostIncomeModelTags.Add(new CostIncomeModelTag { TagModel = tag });
+                }
                 await _costIncomeService.SaveAsync(model);
                 return RedirectToAction("Index");
             }
