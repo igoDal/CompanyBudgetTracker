@@ -4,6 +4,7 @@ using CompanyBudgetTracker.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using CompanyBudgetTracker.Models;
 using CompanyBudgetTracker.Services;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -33,6 +34,12 @@ public class CostIncomeController : Controller
 
     public IActionResult RedirectToNewRecord()
     {
+        var categories = _context.Categories
+            .Select(c => new { c.Id, c.Name })
+            .ToList();
+
+        ViewData["Categories"] = new SelectList(categories, "Id", "Name");
+
         return View("NewRecord");
     }
 
@@ -162,4 +169,6 @@ public class CostIncomeController : Controller
 
         return View("Index");
     }
+    
+    
 }
