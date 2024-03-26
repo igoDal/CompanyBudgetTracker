@@ -43,7 +43,8 @@ public class CostIncomeController : Controller
         return View("NewRecord");
     }
 
-    public IActionResult GetHistory(string? itemName, int? itemId, string? itemType, DateTime? startDate, DateTime? endDate)
+    public IActionResult GetHistory
+        (string? itemName, int? itemId, string? itemType, DateTime? startDate, DateTime? endDate, int page = 1, int pageSize = 10, string sortOrder = "date_desc")
     {
         var query = _context.CostIncomes.AsQueryable();
         
@@ -60,9 +61,31 @@ public class CostIncomeController : Controller
         
         var totalAmount = query.Sum(x => x.Amount);
         
-        ViewData["TotalAmount"] = totalAmount;
-        var records = query.ToList();
+        switch (sortOrder)
+        {
+            case "date_asc":
+                query = query.OrderBy(x => x.Date);
+                break;
+            case "amount_desc":
+                query = query.OrderByDescending(x => x.Amount);
+                break;
+            default:
+                query = query.OrderByDescending(x => x.Date);
+                break;
+        }
+        
+        int totalRecords = query.Count();
+        var records = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+        
+        ViewData["TotalRecords"] = totalRecords;
+        ViewData["CurrentPage"] = page;
+        ViewData["PageSize"] = pageSize;
+
         return View("History", records);
+        
+        /*ViewData["TotalAmount"] = totalAmount;
+        var records = query.ToList();
+        return View("History", records);*/
     }
     
     [HttpPost]
