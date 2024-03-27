@@ -29,11 +29,21 @@
 <table class="table">
     <thead>
     <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Amount</th>
-        <th>Date</th>
+        <th>
+            <a href="@Url.Action("GetHistory", "CostIncome", new { sortOrder = ViewBag.IdSortParm })">ID</a>
+        </th>
+        <th>
+            <a href="@Url.Action("GetHistory", "CostIncome", new { sortOrder = ViewBag.NameSortParm })">Name</a>
+        </th>
+        <th>
+            <a href="@Url.Action("GetHistory", "CostIncome", new { sortOrder = ViewBag.TypeSortParm })">Type</a>
+        </th>
+        <th>
+            <a href="@Url.Action("GetHistory", "CostIncome", new { sortOrder = ViewBag.AmountSortParm })">Amount</a>
+        </th>
+        <th>
+            <a href="@Url.Action("GetHistory", "CostIncome", new { sortOrder = ViewBag.DateSortParm })">Date</a>
+        </th>
         <th>AttachmentName</th>
         <th>AttachmentContentType</th>
         <th>Settled</th>

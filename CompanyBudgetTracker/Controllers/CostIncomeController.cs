@@ -44,8 +44,13 @@ public class CostIncomeController : Controller
     }
 
     public IActionResult GetHistory
-        (string? itemName, int? itemId, string? itemType, DateTime? startDate, DateTime? endDate, int page = 1, int pageSize = 10, string sortOrder = "date_desc")
+        (string? itemName, int? itemId, string? itemType, DateTime? startDate, DateTime? endDate,  string? sortOrder, int page = 1, int pageSize = 10)
     {
+        ViewBag.IdSortParm = String.IsNullOrEmpty(sortOrder) ? "id_desc" : "";
+        ViewBag.NameSortParm = sortOrder == "name_asc" ? "name_desc" : "name_asc";
+        ViewBag.TypeSortParm = sortOrder == "type_asc" ? "type_desc" : "type_asc";
+        ViewBag.AmountSortParm = sortOrder == "amount_asc" ? "amount_desc" : "amount_asc";
+        ViewBag.DateSortParm = sortOrder == "date_asc" ? "date_desc" : "date_asc";
         var query = _context.CostIncomes.AsQueryable();
         
         if (itemId.HasValue)
@@ -69,8 +74,14 @@ public class CostIncomeController : Controller
             case "amount_desc":
                 query = query.OrderByDescending(x => x.Amount);
                 break;
+            case "name_desc":
+                query = query.OrderByDescending(x => x.Name);
+                break;
+            case "name_asc":
+                query = query.OrderBy(x => x.Name);
+                break;
             default:
-                query = query.OrderByDescending(x => x.Date);
+                query = query.OrderByDescending(x => x.Id);
                 break;
         }
         
