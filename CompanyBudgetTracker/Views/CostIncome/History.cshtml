@@ -89,6 +89,23 @@
     </tbody>
 </table>
 
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        <li class="page-item @((int)ViewData["CurrentPage"] == 1 ? "disabled" : "")">
+            <a class="page-link" href="@Url.Action("GetHistory", new { page = (int)ViewData["CurrentPage"] - 1 })">Previous</a>
+        </li>
+        @for (int i = 1; i <= (int)ViewData["TotalPages"]; i++)
+        {
+            <li class="page-item @(i == (int)ViewData["CurrentPage"] ? "active" : "")">
+                <a class="page-link" href="@Url.Action("GetHistory", new { page = i })">@i</a>
+            </li>
+        }
+        <li class="page-item @(ViewData["CurrentPage"].ToString() == ViewData["TotalPages"].ToString() ? "disabled" : "")">
+            <a class="page-link" href="@Url.Action("GetHistory", new { page = (int)ViewData["CurrentPage"] + 1 })">Next</a>
+        </li>
+    </ul>
+</nav>
+
 <style>
     .filtering-class {
         display: flex;

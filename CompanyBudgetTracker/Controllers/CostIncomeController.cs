@@ -91,6 +91,9 @@ public class CostIncomeController : Controller
         ViewData["TotalRecords"] = totalRecords;
         ViewData["CurrentPage"] = page;
         ViewData["PageSize"] = pageSize;
+        
+        int totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
+        ViewData["TotalPages"] = totalPages;
 
         return View("History", records);
         
