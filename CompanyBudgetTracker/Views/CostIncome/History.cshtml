@@ -47,6 +47,7 @@
         <th>AttachmentName</th>
         <th>AttachmentContentType</th>
         <th>Settled</th>
+        <th>Details</th>
     </tr>
     </thead>
     <tbody>
@@ -71,7 +72,7 @@
             </td>
             <td>
                 @if (!record.Settled)
-                                {
+                {
                     <a href="@Url.Action("Settle", "CostIncome", new { itemId = record.Id, settled = true })"
                        class="btn btn-primary"> Settle </a>
                 }
@@ -79,6 +80,9 @@
                 {
                     <button class="btn btn-primary" disabled>Settle</button>
                 }
+            </td>
+            <td>
+                <a href="@Url.Action("Details", "CostIncome", new { itemId = record.Id })" class="btn btn-info">Details</a>
             </td>
         </tr>
     }

@@ -207,5 +207,23 @@ public class CostIncomeController : Controller
         return View("Index");
     }
     
+    public async Task<IActionResult> Details(int? itemId)
+    {
+        if (itemId == null)
+        {
+            return NotFound();
+        }
+
+        var record = await _context.CostIncomes
+            .FirstOrDefaultAsync(m => m.Id == itemId);
+        if (record == null)
+        {
+            return NotFound();
+        }
+
+        return View("RecordDetails");
+    }
+
+    
     
 }
