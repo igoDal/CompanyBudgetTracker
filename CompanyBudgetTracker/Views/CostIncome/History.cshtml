@@ -63,12 +63,7 @@
             <td>@record.AttachmentContentType</td>
             <td>@record.Settled</td>
             <td>
-                <a href="@Url.Action("OpenAttachment", "CostIncome", new { attachmentId = record.Id })"
-                   id="openAttachment" class="btn btn-primary"> Download </a>
-            </td>
-            <td>
-                <a href="@Url.Action("DeleteRecord", "CostIncome", new { itemId = record.Id })"
-                   id="deleteBtn" class="btn btn-primary"> Delete </a>
+                <a href="@Url.Action("Details", "CostIncome", new { itemId = record.Id })" class="btn btn-info">Details</a>
             </td>
             <td>
                 @if (!record.Settled)
@@ -82,7 +77,8 @@
                 }
             </td>
             <td>
-                <a href="@Url.Action("Details", "CostIncome", new { itemId = record.Id })" class="btn btn-info">Details</a>
+                <a href="@Url.Action("DeleteRecord", "CostIncome", new { itemId = record.Id })"
+                   id="deleteBtn" class="btn btn-primary"> Delete </a>
             </td>
         </tr>
     }

@@ -126,26 +126,9 @@ public class CostIncomeController : Controller
                     Console.WriteLine(error);
                 }
             }
-            else if (ModelState.IsValid)
-            {
-                var tagNames = tags.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                    .Select(t => t.Trim())
-                    .Distinct();
 
-                foreach (var tagName in tagNames)
-                {
-                    var tag = await _context.Tags.SingleOrDefaultAsync(t => t.Name == tagName);
-                    if (tag == null)
-                    {
-                        tag = new TagModel { Name = tagName };
-                        _context.Tags.Add(tag);
-                    }
-
-                    model.CostIncomeModelTags.Add(new CostIncomeModelTag { TagModel = tag });
-                }
-                await _costIncomeService.SaveAsync(model);
-                return RedirectToAction("Index");
-            }
+            await _costIncomeService.SaveAsync(model);
+            return RedirectToAction("Index");
         }
         catch (Exception ex)
         {
@@ -221,7 +204,7 @@ public class CostIncomeController : Controller
             return NotFound();
         }
 
-        return View("RecordDetails");
+        return View("RecordDetails", record);
     }
 
     

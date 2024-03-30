@@ -23,10 +23,6 @@
             </select>
             <label>Date: </label>
             <input id="transactionDate" name="transactionDate" type="date"/>
-            <div class="text-center form-element">
-                <label for="tags">Tags (comma-separated): </label>
-                <input id="tags" name="tags" type="text" />
-            </div>
             <div class="form-group">
                 <label for="categoryId">Category: </label>
                 <select id="categoryId" name="CategoryId" class="form-control">
@@ -60,7 +56,6 @@
             formData.append('Amount', document.getElementById("amount").value);
             formData.append('Type', document.getElementById("transactionType").value);
             formData.append('Date', document.getElementById("transactionDate").value);
-            formData.append('Tags', document.getElementById("tags").value);
             formData.append('Category', document.getElementById("categoryId").value);
             formData.append('transactionAtt', document.getElementById("transactionAtt").files[0]);
         

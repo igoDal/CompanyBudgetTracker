@@ -16,7 +16,5 @@ public class CostIncomeModel
     public bool Settled { get; set; }
     public int CategoryId { get; set; }
     public CategoryModel Category { get; set; }
-    public ICollection<CostIncomeModelTag> CostIncomeModelTags { get; set; }
-    
 
 }
