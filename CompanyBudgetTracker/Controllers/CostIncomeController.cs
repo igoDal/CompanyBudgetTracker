@@ -103,7 +103,7 @@ public class CostIncomeController : Controller
     }
     
     [HttpPost]
-    public async Task<IActionResult> SaveTransaction(CostIncomeModel model, IFormFile transactionAtt, string tags)
+    public async Task<IActionResult> SaveTransaction(CostIncomeModel model, IFormFile transactionAtt)
     {
         if (transactionAtt != null && transactionAtt.Length > 0)
         {

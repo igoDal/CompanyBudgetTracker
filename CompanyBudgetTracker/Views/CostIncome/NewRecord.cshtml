@@ -14,15 +14,15 @@
         <h1 class="display-4">Welcome</h1>
         <div class="text-center form-element">
             <label>Name: </label>
-            <input id="transactionName" name="transactionName" type="text"/>
+            <input id="transactionName" name="transactionName" type="text" required/>
             <label>Amount: </label>
-            <input id="amount" name="amount" type="number"/>
+            <input id="amount" name="amount" type="number" min="0.01" required/>
             <select id="transactionType" name="transactionType">
                 <option id="costType">Cost</option>
                 <option id="incomeType">Income</option>
             </select>
             <label>Date: </label>
-            <input id="transactionDate" name="transactionDate" type="date"/>
+            <input id="transactionDate" name="transactionDate" type="date" required/>
             <div class="form-group">
                 <label for="categoryId">Category: </label>
                 <select id="categoryId" name="CategoryId" class="form-control">
@@ -77,4 +77,32 @@
             });
         });
     </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#submitBtn").prop('disabled', true);
+
+            function checkFormInputs() {
+                var isFormValid = true;
+
+                if ($('#transactionName').val().trim() === '') {
+                    isFormValid = false;
+                }
+                if ($('#amount').val() <= 0) {
+                    isFormValid = false;
+                }
+                if ($('#transactionDate').val() === '') {
+                    isFormValid = false;
+                }
+                $("#submitBtn").prop('disabled', !isFormValid);
+            }
+
+            $("input, select").on("change keyup", function () {
+                checkFormInputs();
+            });
+        });
+    </script>
+    
 }
+
+
