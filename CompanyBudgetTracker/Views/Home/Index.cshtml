@@ -5,11 +5,20 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <button id="costIncomeTabBtn">Costs and Incomes</button>
+    <button id="categoriesTabBtn">Categories</button>
     <a href="@Url.Action("Dashboard", "Home")">Dashboard</a>
 </div>
 
-<script type="text/javascript">
-        document.getElementById('costIncomeTabBtn').addEventListener('click', function () {
-            window.location.href = '@Url.Action("Index", "CostIncome")'
-        });
-</script>
+@section Scripts
+{
+        <script type="text/javascript">
+            document.getElementById('costIncomeTabBtn').addEventListener('click', function () {
+                window.location.href = '@Url.Action("Index", "CostIncome")'
+            });
+    </script>
+        <script type="text/javascript">
+            document.getElementById('categoriesTabBtn').addEventListener('click', function () {
+                window.location.href = '@Url.Action("Index", "Categories")'
+            });
+    </script>
+}

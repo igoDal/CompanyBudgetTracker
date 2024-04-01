@@ -1,0 +1,33 @@
+﻿@model IEnumerable<CompanyBudgetTracker.Models.CategoryModel>
+
+<h2>Categories</h2>
+
+<p>
+    <button id="btnAddCategory">Add New Category</button>
+</p>
+
+<table>
+    <thead>
+    <tr>
+        <th>Category Name</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var category in Model)
+    {
+        <tr>
+            <td>@category.Name</td>
+            <td>
+                <button class="btnEditCategory" data-id="@category.Id">Edit</button>
+                <button class="btnDeleteCategory" data-id="@category.Id">Delete</button>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+}
