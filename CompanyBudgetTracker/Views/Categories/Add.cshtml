@@ -1,0 +1,12 @@
+﻿@model CompanyBudgetTracker.Models.CategoryModel
+
+<h2>@(Model.Id == 0 ? "Add Category" : "Edit Category")</h2>
+
+<form asp-controller="Categories" asp-action="Add" method="post">
+    <div class="form-group">
+        <label for="Name">Category Name</label>
+        <input type="text" class="form-control" id="Name" name="Name" value="@Model.Name" required />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>
