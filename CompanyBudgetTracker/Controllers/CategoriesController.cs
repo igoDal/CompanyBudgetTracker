@@ -32,7 +32,7 @@ public class CategoriesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Add(CategoryModel category)
     {
-        bool categoryExists = _context.Categories.Any(c => c.Name.Equals(category.Name, StringComparison.OrdinalIgnoreCase));
+        bool categoryExists = _context.Categories.Any(c => c.Name.ToLower() == category.Name.ToLower());
         if (categoryExists)
         {
             ModelState.AddModelError("Name", "A category with the same name already exists.");
@@ -118,13 +118,26 @@ public class CategoriesController : Controller
         return View(category);
     }
 
-    [HttpPost, ActionName("Delete")]
+    [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         var category = await _context.Categories.FindAsync(id);
-        _context.Categories.Remove(category);
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
+        try
+        {
+
+            if (category != null)
+            {
+                _context.Categories.Remove(category);
+                await _context.SaveChangesAsync();
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+        return Ok();
     }
+
 }
