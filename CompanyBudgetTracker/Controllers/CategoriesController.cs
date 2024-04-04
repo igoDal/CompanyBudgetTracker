@@ -115,7 +115,7 @@ public class CategoriesController : Controller
             return NotFound();
         }
 
-        return View(category);
+        return Ok();
     }
 
     [HttpPost]
