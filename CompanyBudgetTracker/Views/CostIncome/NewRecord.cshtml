@@ -16,25 +16,38 @@
     }
     
     .validation-message {
-        color: #dc3545; /* Bootstrap danger red */
+        color: #dc3545; /* Bootstrap danger red  */
         font-size: 0.875em;
     }
+    
+    /*To-Do: Could use some more colors. Perhaps "warning" message should be also useful
+    for non-required fields.
+     */
 </style>
 
 <form method="post" id="transactionForm" enctype="multipart/form-data" action="@Url.Action("SaveTransaction", "CostIncome")">
     <div class="text-center form-element">
         <h1 class="display-4">Welcome</h1>
         <div class="text-center form-element">
-            <label>Name: </label>
-            <input id="transactionName" name="transactionName" type="text" required/>
-            <label>Amount: </label>
-            <input id="amount" name="amount" type="number" min="0.01" required/>
-            <select id="transactionType" name="transactionType">
-                <option id="costType">Cost</option>
-                <option id="incomeType">Income</option>
-            </select>
-            <label>Date: </label>
-            <input id="transactionDate" name="transactionDate" type="date" required/>
+            <div class="form-group">
+                <label>Name: </label>
+                <input id="transactionName" name="transactionName" type="text" required/>
+                <div class="validation-message" style="display: none;">This field is required</div>
+
+                <label>Amount: </label>
+                <input id="amount" name="amount" type="number" min="0.01" required/>
+                <div class="validation-message" style="display: none;">This field is required</div>
+
+                <select id="transactionType" name="transactionType">
+                    <option id="costType">Cost</option>
+                    <option id="incomeType">Income</option>
+                </select>
+
+                <label>Date: </label>
+                <input id="transactionDate" name="transactionDate" type="date" required/>
+                <div class="validation-message" style="display: none;">This field is required</div>
+            </div>
+            
             <div class="form-group">
                 <label for="categoryId">Category: </label>
                 <select id="categoryId" name="CategoryId" class="form-control">
@@ -47,9 +60,9 @@
             </div>
             <div class="text-center form-element">
                 <label for="transactionAtt">Select attachment: </label>
-                <input id="transactionAtt" name="transactionAtt" type="file" onchange="updateLabel()" />
+                <input id="transactionAtt" name="transactionAtt" type="file" onchange="updateLabel()"/>
             </div>
-            
+
         </div>
         <div class="text-center form-element">
             <button type="submit" id="submitBtn">Submit</button>
