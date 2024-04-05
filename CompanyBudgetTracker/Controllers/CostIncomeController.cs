@@ -96,10 +96,7 @@ public class CostIncomeController : Controller
         ViewData["TotalPages"] = totalPages;
 
         return View("History", records);
-        
-        /*ViewData["TotalAmount"] = totalAmount;
-        var records = query.ToList();
-        return View("History", records);*/
+
     }
     
     [HttpPost]

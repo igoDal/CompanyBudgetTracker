@@ -6,7 +6,19 @@
 <style>
     .form-element {
         margin-bottom: 20px;
-        }
+    }
+    .input-valid {
+        border-color: #198754; /* Bootstrap success green */
+    }
+    
+    .input-invalid {
+        border-color: #dc3545; /* Bootstrap danger red */
+    }
+    
+    .validation-message {
+        color: #dc3545; /* Bootstrap danger red */
+        font-size: 0.875em;
+    }
 </style>
 
 <form method="post" id="transactionForm" enctype="multipart/form-data" action="@Url.Action("SaveTransaction", "CostIncome")">
@@ -80,25 +92,40 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
-            $("#submitBtn").prop('disabled', true);
-
-            function checkFormInputs() {
+            validateForm();
+    
+            function validateInput(inputElement, isValid) {
+                if (isValid) {
+                    $(inputElement).removeClass("input-invalid").addClass("input-valid");
+                    $(inputElement).next(".validation-message").remove();
+                } else {
+                    $(inputElement).removeClass("input-valid").addClass("input-invalid");
+                    if ($(inputElement).next(".validation-message").length === 0) {
+                        $('<div class="validation-message">This field is required.</div>').insertAfter($(inputElement));
+                    }
+                }
+            }
+    
+            function validateForm() {
                 var isFormValid = true;
-
-                if ($('#transactionName').val().trim() === '') {
-                    isFormValid = false;
-                }
-                if ($('#amount').val() <= 0) {
-                    isFormValid = false;
-                }
-                if ($('#transactionDate').val() === '') {
-                    isFormValid = false;
-                }
+    
+                var name = $('#transactionName').val().trim();
+                validateInput('#transactionName', name !== '');
+                isFormValid &= (name !== '');
+    
+                var amount = parseFloat($('#amount').val());
+                validateInput('#amount', !isNaN(amount) && amount > 0);
+                isFormValid &= (!isNaN(amount) && amount > 0);
+    
+                var date = $('#transactionDate').val().trim();
+                validateInput('#transactionDate', date !== '');
+                isFormValid &= (date !== '');
+    
                 $("#submitBtn").prop('disabled', !isFormValid);
             }
-
+    
             $("input, select").on("change keyup", function () {
-                checkFormInputs();
+                validateForm();
             });
         });
     </script>
