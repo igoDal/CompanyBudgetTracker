@@ -6,6 +6,23 @@
     }
 </style>
 
+<form asp-action="Dashboard" method="get">
+    <div class="date-selection">
+        <label for="startDate">From:</label>
+        <input type="date" id="startDate" name="startDate" />
+
+        <label for="endDate">To:</label>
+        <input type="date" id="endDate" name="endDate" />
+
+        <button type="submit">Show</button>
+    </div>
+    <div class="predefined-ranges">
+        <button type="submit" formaction="@Url.Action("Dashboard", new { range = "last30Days" })">Last 30 Days</button>
+        <button type="submit" formaction="@Url.Action("Dashboard", new { range = "last3Months" })">Last 3 Months</button>
+        <button type="submit" formaction="@Url.Action("Dashboard", new { range = "lastYear" })">Last Year</button>
+    </div>
+</form>
+
 <div class="dashboard">
     <h2>Dashboard</h2>
     <canvas id="incomeVsExpensesChart" width="400" height="200"></canvas>
@@ -47,6 +64,21 @@
                 }
             }
         });
+    </script>
+    <script>
+        window.onload = function() {
+            var startDate = document.getElementById('startDate');
+            var endDate = document.getElementById('endDate');
+    
+            if (!startDate.value) {
+                startDate.valueAsDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+            }
+    
+            if (!endDate.value) {
+                var today = new Date();
+                endDate.valueAsDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            }
+        };
     </script>
     
 }
