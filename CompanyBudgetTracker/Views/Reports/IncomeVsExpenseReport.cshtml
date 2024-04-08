@@ -1,0 +1,14 @@
+﻿@model dynamic
+
+@{
+    ViewData["Title"] = "Income Vs Expense Report";
+}
+
+<h2>Income Vs Expense Report</h2>
+<p>Report from @Model.StartDate.ToString("d") to @Model.EndDate.ToString("d")</p>
+
+<div>
+    <p><strong>Income:</strong> @Model.Income.ToString("C")</p>
+    <p><strong>Expenses:</strong> @Model.Expenses.ToString("C")</p>
+    <p><strong>Financial Result:</strong> @Model.FinancialResult.ToString("C")</p>
+</div>

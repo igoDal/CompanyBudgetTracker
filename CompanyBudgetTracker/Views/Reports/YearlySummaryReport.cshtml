@@ -1,0 +1,26 @@
+﻿@model IEnumerable<dynamic>
+
+@{
+    ViewData["Title"] = "Yearly Summary Report";
+}
+
+<h2>Yearly Summary Report</h2>
+<p>Report for @ViewBag.Year</p>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Type</th>
+        <th>Total</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Type</td>
+            <td>@item.Total.ToString("C")</td>
+        </tr>
+    }
+    </tbody>
+</table>
