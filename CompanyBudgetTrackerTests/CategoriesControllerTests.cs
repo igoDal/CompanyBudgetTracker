@@ -35,4 +35,43 @@ public class CategoriesControllerTests
         var model = Assert.IsAssignableFrom<IEnumerable<CategoryModel>>(viewResult.Model);
         Assert.Equal(2, model.Count());
     }
+    
+    [Fact]
+    public async Task Add_Post_ValidCategory_AddsCategoryAndRedirects()
+    {
+        // Arrange
+        var category = new CategoryModel { Name = "New Category" };
+
+        // Act
+        var result = await _controller.Add(category);
+
+        // Assert
+        var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
+        Assert.Equal("Index", redirectToActionResult.ActionName);
+        var addedCategory = await _context.Categories.FirstOrDefaultAsync(c => c.Name == "New Category");
+        Assert.NotNull(addedCategory);
+    }
+
+    [Fact]
+    public async Task Edit_Post_ValidData_UpdatesCategoryAndRedirects()
+    {
+        // Arrange
+        var category = new CategoryModel { Id = 1, Name = "Original Category" };
+        _context.Categories.Add(category);
+        await _context.SaveChangesAsync();
+        
+        var categoryToUpdate = await _context.Categories.FindAsync(1);
+        categoryToUpdate.Name = "Updated Category";
+
+        // Act
+        var result = await _controller.Edit(1, categoryToUpdate);
+
+        // Assert
+        var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
+        Assert.Equal("Index", redirectToActionResult.ActionName);
+        var editedCategory = await _context.Categories.FindAsync(1);
+        Assert.Equal("Updated Category", editedCategory.Name);
+    }
+
+    
 }
