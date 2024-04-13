@@ -1,4 +1,5 @@
 ﻿using CompanyBudgetTracker.Context;
+using CompanyBudgetTracker.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,10 @@ public class ReportsController : Controller
         _context = context;
     }
     
+    public IActionResult Index()
+    {
+        return View();
+    }
     
     public async Task<IActionResult> IncomeVsExpenseReport(DateTime startDate, DateTime endDate)
     {
@@ -24,7 +29,7 @@ public class ReportsController : Controller
             .Where(x => x.Type == "Cost" && x.Date >= startDate && x.Date <= endDate)
             .SumAsync(x => x.Amount);
 
-        var model = new
+        var model = new FinancialReportModel
         {
             Income = income,
             Expenses = expenses,
@@ -35,6 +40,7 @@ public class ReportsController : Controller
 
         return View(model);
     }
+
     
     public async Task<IActionResult> YearlySummaryReport(int year)
     {

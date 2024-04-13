@@ -1,0 +1,11 @@
+﻿@{
+    ViewData["Title"] = "Reports Index";
+}
+
+<h2>Reports</h2>
+<div>
+    <a href="@Url.Action("IncomeVsExpenseReport", "Reports", 
+    new { startDate = DateTime.Now.AddMonths(-1), endDate = DateTime.Now })" class="btn btn-link">Income vs Expense Report</a>
+    <a href="@Url.Action("YearlySummaryReport", "Reports", 
+    new { year = DateTime.Now.Year })" class="btn btn-link">Yearly Summary Report</a>
+</div>

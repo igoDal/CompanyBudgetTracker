@@ -14,21 +14,9 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <button id="costIncomeTabBtn">Costs and Incomes</button>
-    <button id="categoriesTabBtn">Categories</button>
-    <a href="@Url.Action("Dashboard", "Home")">Dashboard</a>
-</div>
+    <a href="@Url.Action("Index", "CostIncome")" class="btn btn-secondary">CostIncome</a>
+    <a href="@Url.Action("Index", "Categories")" class="btn btn-secondary">Categories</a>
+    <a href="@Url.Action("Dashboard", "Home")" class="btn btn-secondary">Dashboard</a>
+    <a href="@Url.Action("Index", "Reports")" class="btn btn-secondary">View Reports</a>
 
-@section Scripts
-{
-        <script type="text/javascript">
-            document.getElementById('costIncomeTabBtn').addEventListener('click', function () {
-                window.location.href = '@Url.Action("Index", "CostIncome")'
-            });
-    </script>
-        <script type="text/javascript">
-            document.getElementById('categoriesTabBtn').addEventListener('click', function () {
-                window.location.href = '@Url.Action("Index", "Categories")'
-            });
-    </script>
-}
+</div>
