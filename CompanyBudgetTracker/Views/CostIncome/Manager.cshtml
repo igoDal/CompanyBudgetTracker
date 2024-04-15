@@ -5,6 +5,17 @@
     ViewData["Title"] = "Cost / Income history";
 }
 
+<style>
+    head, body, html {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+    
+    a {
+        color: #bb86fc;
+    }
+</style>
+
 <h2>@ViewData["History"]</h2>
 
 <form method="get" action="@Url.Action("GetHistory", "CostIncome")">

@@ -19,10 +19,15 @@
         color: #dc3545; /* Bootstrap danger red  */
         font-size: 0.875em;
     }
+
+    head, body, html {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
     
-    /*To-Do: Could use some more colors. Perhaps "warning" message should be also useful
-    for non-required fields.
-     */
+    a {
+        color: #bb86fc;
+    }
 </style>
 
 <form method="post" id="transactionForm" enctype="multipart/form-data" action="@Url.Action("SaveTransaction", "CostIncome")">
