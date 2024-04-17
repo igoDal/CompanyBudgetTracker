@@ -1,0 +1,39 @@
+﻿@model CompanyBudgetTracker.Models.FinancialHealthModel
+
+@{
+    ViewData["Title"] = "Financial Health Dashboard";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Cash Flow This Month</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.CashFlow.ToString("C")</h5>
+                    <p class="card-text">Net movement of cash into and out of the business.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-danger mb-3">
+                <div class="card-header">Debt-to-Income Ratio</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.DebtToIncomeRatio.ToString("P2")</h5>
+                    <p class="card-text">Percentage of income that goes towards debt payments.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-header">Quick Ratio</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.QuickRatio.ToString("N2")</h5>
+                    <p class="card-text">Indicates the liquidity of the company, higher is better.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

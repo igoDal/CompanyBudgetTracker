@@ -70,4 +70,38 @@ public class HomeController : Controller
 
         return View(viewModel);
     }
+    
+    public async Task<IActionResult> FinancialHealth()
+    {
+        var today = DateTime.Today;
+        var startOfMonth = new DateTime(today.Year, today.Month, 1);
+        
+        var totalIncomeThisMonth = await _context.CostIncomes
+            .Where(x => x.Date >= startOfMonth && x.Type == "Income")
+            .SumAsync(x => x.Amount);
+
+        var totalExpensesThisMonth = await _context.CostIncomes
+            .Where(x => x.Date >= startOfMonth && x.Type == "Cost")
+            .SumAsync(x => x.Amount);
+
+        var totalLiabilities = await _context.Liabilities.SumAsync(x => x.Amount);
+
+        var financialHealthViewModel = new FinancialHealthModel
+        {
+            CashFlow = totalIncomeThisMonth - totalExpensesThisMonth,
+            DebtToIncomeRatio = totalIncomeThisMonth != 0 ? (totalLiabilities / totalIncomeThisMonth) : 0,
+            QuickRatio = await CalculateQuickRatio()
+        };
+
+        return View("FinancialHealth");
+    }
+
+    private async Task<decimal> CalculateQuickRatio()
+    {
+        var liquidAssets = await _context.Assets.Where(x => x.IsLiquid).SumAsync(x => x.Value);
+        var currentLiabilities = await _context.Liabilities.Where(x => x.IsCurrent).SumAsync(x => x.Amount);
+    
+        return currentLiabilities != 0 ? (liquidAssets / currentLiabilities) : 0;
+    }
+
 }

@@ -14,11 +14,15 @@ public class MyDbContext : IdentityDbContext<IdentityUser>
 
     public DbSet<CategoryModel> Categories { get; set; }
     public DbSet<CostIncomeModel> CostIncomes { get; set; }
+    public DbSet<AssetModel> Assets { get; set; }
+    public DbSet<LiabilityModel> Liabilities { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<AssetModel>().ToTable("Assets");
+        modelBuilder.Entity<LiabilityModel>().ToTable("Liabilities");
         modelBuilder.Entity<CostIncomeModel>().ToTable("CostIncome")
             .Property(p => p.Id)
             .ValueGeneratedOnAdd();
