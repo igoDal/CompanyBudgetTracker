@@ -1,0 +1,17 @@
+﻿@model AlertSetting
+
+<form asp-action="SaveAlertSettings">
+    <label>Threshold Type:</label>
+    <select asp-for="ThresholdType" asp-items="Html.GetEnumSelectList<ThresholdType>()"></select>
+    
+    <label>Threshold Amount:</label>
+    <input asp-for="ThresholdAmount" type="number" step="0.01" />
+
+    <label>Notify by Email:</label>
+    <input asp-for="NotifyByEmail" type="checkbox" />
+
+    <label>Notify in Application:</label>
+    <input asp-for="NotifyInApp" type="checkbox" />
+
+    <button type="submit">Save Settings</button>
+</form>
