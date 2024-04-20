@@ -26,6 +26,21 @@ public class MyDbContext : IdentityDbContext<IdentityUser>
         modelBuilder.Entity<AssetModel>().HasKey(a => a.AssetId);
         modelBuilder.Entity<LiabilityModel>().HasKey(a => a.LiabilityId);
         
+        modelBuilder.Entity<AlertSetting>()
+            .Property(p => p.ThresholdAmount)
+            .HasColumnType("decimal(20, 6)");
+        modelBuilder.Entity<AssetModel>()
+            .Property(p => p.Value)
+            .HasColumnType("decimal(20, 6)");
+        
+        modelBuilder.Entity<CostIncomeModel>()
+            .Property(p => p.Amount)
+            .HasColumnType("decimal(20, 6)");
+        
+        modelBuilder.Entity<LiabilityModel>()
+            .Property(p => p.Amount)
+            .HasColumnType("decimal(20, 6)");
+        
         modelBuilder.Entity<AssetModel>().ToTable("Assets");
         modelBuilder.Entity<LiabilityModel>().ToTable("Liabilities");
         modelBuilder.Entity<CostIncomeModel>().ToTable("CostIncome")
