@@ -17,6 +17,8 @@ public class MyDbContext : IdentityDbContext<IdentityUser>
     public DbSet<AssetModel> Assets { get; set; }
     public DbSet<LiabilityModel> Liabilities { get; set; }
     public DbSet<AlertSetting> AlertSettings { get; set; }
+    public DbSet<UserSettings> UserSettings { get; set; }
+    
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -46,6 +48,11 @@ public class MyDbContext : IdentityDbContext<IdentityUser>
         modelBuilder.Entity<CostIncomeModel>().ToTable("CostIncome")
             .Property(p => p.Id)
             .ValueGeneratedOnAdd();
+        
+        modelBuilder.Entity<UserSettings>()
+            .HasOne<IdentityUser>(s => s.User)
+            .WithMany()
+            .HasForeignKey(s => s.UserId);
     }
 
 }

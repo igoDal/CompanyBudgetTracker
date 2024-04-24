@@ -1,0 +1,21 @@
+﻿@model UserSettings
+
+@{
+    ViewData["Title"] = "Edit Settings";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Edit">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label asp-for="EnableNotifications" class="control-label"></label>
+        <input asp-for="EnableNotifications" class="form-check-input" />
+        <span asp-validation-for="EnableNotifications" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
