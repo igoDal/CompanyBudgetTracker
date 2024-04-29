@@ -12,17 +12,15 @@ public class UserService : IUserService
         _userManager = userManager;
     }
 
-    public async Task<bool> AssignRoleToUserAsync(string userId, Roles role)
+    public async Task<IdentityResult> AssignRoleToUserAsync(string userId, string roleName)
     {
         var user = await _userManager.FindByIdAsync(userId);
         if (user == null)
         {
-            return false;
+            throw new ArgumentException("User not found");
         }
 
-        string roleName = Enum.GetName(typeof(Roles), role);
-        var result = await _userManager.AddToRoleAsync(user, roleName);
-        return result.Succeeded;
+        return await _userManager.AddToRoleAsync(user, roleName);
     }
-
+    
 }

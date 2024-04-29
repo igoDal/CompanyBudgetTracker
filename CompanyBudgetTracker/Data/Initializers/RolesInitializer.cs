@@ -3,8 +3,14 @@ using Microsoft.AspNetCore.Identity;
 
 namespace CompanyBudgetTracker.Data.Initializers;
 
-public static class RoleInitializer
+public class RoleInitializer
 {
+    private readonly UserManager<IdentityUser> _userManager;
+
+    public RoleInitializer(UserManager<IdentityUser> userManager)
+    {
+        _userManager = userManager;
+    }
     public static async Task InitializeAsync(IServiceProvider serviceProvider)
     {
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -17,4 +23,20 @@ public static class RoleInitializer
             }
         }
     }
+    
+    public async Task AssignRoleToUser(string userId, Roles role)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            throw new ArgumentException("User not found.");
+        }
+
+        string roleName = Enum.GetName(typeof(Roles), role);
+        if (!await _userManager.IsInRoleAsync(user, roleName))
+        {
+            await _userManager.AddToRoleAsync(user, roleName);
+        }
+    }
+
 }

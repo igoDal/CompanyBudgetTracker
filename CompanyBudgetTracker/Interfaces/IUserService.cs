@@ -1,8 +1,9 @@
 ﻿using CompanyBudgetTracker.Enums;
+using Microsoft.AspNetCore.Identity;
 
 namespace CompanyBudgetTracker.Services;
 
 public interface IUserService
 {
-    Task<bool> AssignRoleToUserAsync(string userId, Roles role);
+    Task<IdentityResult> AssignRoleToUserAsync(string userId, string roleName);
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using CompanyBudgetTracker.Models;
+using CompanyBudgetTracker.Services;
 
 namespace CompanyBudgetTracker.Controllers;
 
@@ -9,7 +10,29 @@ public class AccountController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly IUserService _userService;
 
+    public AccountController(IUserService userService)
+    {
+        _userService = userService;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AssignRole(string userId, string roleName)
+    {
+        var result = await _userService.AssignRoleToUserAsync(userId, roleName);
+        if (result.Succeeded)
+        {
+            return RedirectToAction("Login"); // To-Do: Index or redirect to homepage
+        }
+
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError("", error.Description);
+        }
+
+        return View("Error");
+    }
     public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
     {
         _userManager = userManager;
