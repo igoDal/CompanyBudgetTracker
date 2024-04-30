@@ -13,6 +13,16 @@
         <input asp-for="EnableNotifications" class="form-check-input" />
         <span asp-validation-for="EnableNotifications" class="text-danger"></span>
     </div>
+    <div class="form-group">
+        <label for="Language">Preferred Language:</label>
+        <select asp-for="Language" class="form-control">
+            <option value="en-US">English (US)</option>
+            <option value="es-ES">Spanish (Spain)</option>
+            <option value="fr-FR">French (France)</option>
+            <option value="de-DE">German (Germany)</option>
+            <option value="zh-CN">Chinese (Simplified)</option>
+        </select>
+    </div>
     <button type="submit" class="btn btn-success">Save</button>
 </form>
 
