@@ -37,11 +37,22 @@ public class SettingsController : Controller
     {
         if (ModelState.IsValid)
         {
-            _context.Update(userSetting);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var dbEntry = await _context.UserSettings.FindAsync(userSetting.Id);
+            if (dbEntry != null)
+            {
+                dbEntry.EnableNotifications = userSetting.EnableNotifications;
+                dbEntry.Theme = userSetting.Theme; 
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                _context.UserSettings.Add(userSetting);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
         }
-        return View("Index");
+        return View("EditUserSettings");
     }
     
     [HttpPost]
@@ -70,4 +81,6 @@ public class SettingsController : Controller
 
         return View("Index");
     }
+    
+    
 }
