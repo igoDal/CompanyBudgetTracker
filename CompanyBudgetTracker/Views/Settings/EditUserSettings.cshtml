@@ -1,38 +1,36 @@
 ﻿@model UserSettings
 
-@{
-    ViewData["Title"] = "Edit Settings";
-}
+<form asp-action="Edit" method="post">
+    @* Existing fields *@
 
-<h2>@ViewData["Title"]</h2>
-
-<form asp-action="Edit">
-    <input type="hidden" asp-for="Id" />
     <div class="form-group">
-        <label asp-for="EnableNotifications" class="control-label"></label>
-        <input asp-for="EnableNotifications" class="form-check-input" />
-        <span asp-validation-for="EnableNotifications" class="text-danger"></span>
+        <div class="form-check">
+            <input asp-for="NotifyByEmail" class="form-check-input" type="checkbox" />
+            <label asp-for="NotifyByEmail" class="form-check-label">Notify by Email</label>
+        </div>
+        <div class="form-check">
+            <input asp-for="NotifyBySMS" class="form-check-input" type="checkbox" />
+            <label asp-for="NotifyBySMS" class="form-check-label">Notify by SMS</label>
+        </div>
+        <div class="form-check">
+            <input asp-for="NotifyInApp" class="form-check-input" type="checkbox" />
+            <label asp-for="NotifyInApp" class="form-check-label">Notify in Application</label>
+        </div>
+        <div class="form-check">
+                <input asp-for="NotifyOnNewMessage" class="form-check-input" type="checkbox" />
+                <label asp-for="NotifyOnNewMessage" class="form-check-label">Notify me on new messages</label>
+        </div>
+    
+        <div class="form-check">
+            <input asp-for="NotifyOnTaskCompletion" class="form-check-input" type="checkbox" />
+            <label asp-for="NotifyOnTaskCompletion" class="form-check-label">Notify me when tasks are completed</label>
+        </div>
+    
+        <div class="form-check">
+            <input asp-for="NotifyOnDueDateApproach" class="form-check-input" type="checkbox" />
+            <label asp-for="NotifyOnDueDateApproach" class="form-check-label">Notify me as due dates approach</label>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="Language">Preferred Language:</label>
-        <select asp-for="Language" class="form-control">
-            <option value="en-US">English (US)</option>
-            <option value="es-ES">Spanish (Spain)</option>
-            <option value="fr-FR">French (France)</option>
-            <option value="de-DE">German (Germany)</option>
-            <option value="zh-CN">Chinese (Simplified)</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <label>Theme:</label>
-        <select asp-for="Theme" class="form-control">
-            <option value="Light">Light</option>
-            <option value="Dark">Dark</option>
-        </select>
-    </div>
-    <button type="submit" class="btn btn-success">Save</button>
+    
+    <button type="submit" class="btn btn-primary">Save Changes</button>
 </form>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

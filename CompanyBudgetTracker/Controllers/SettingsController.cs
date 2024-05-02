@@ -18,18 +18,19 @@ public class SettingsController : Controller
     public async Task<IActionResult> Index()
     {
         var userId = _userManager.GetUserId(User);
-        var userSetting = await _context.UserSettings
-            .FirstOrDefaultAsync(us => us.UserId == userId);
+        var userSetting = await _context.UserSettings.FirstOrDefaultAsync(us => us.UserId == userId);
 
         if (userSetting == null)
         {
-            userSetting = new UserSettings { UserId = userId, EnableNotifications = true };
+            userSetting = new UserSettings { UserId = userId, EnableNotifications = true, Theme = "Light" };
             _context.UserSettings.Add(userSetting);
             await _context.SaveChangesAsync();
         }
-
-        return View("Index");
+    
+        ViewData["Theme"] = userSetting.Theme;
+        return View(userSetting);
     }
+
 
     [HttpPost]
     [ValidateAntiForgeryToken]
