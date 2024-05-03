@@ -43,6 +43,14 @@ public class SettingsController : Controller
             {
                 dbEntry.EnableNotifications = userSetting.EnableNotifications;
                 dbEntry.Theme = userSetting.Theme; 
+                
+                dbEntry.NotifyByEmail = userSetting.NotifyByEmail;
+                dbEntry.NotifyBySMS = userSetting.NotifyBySMS;
+                dbEntry.NotifyInApp = userSetting.NotifyInApp;
+                dbEntry.NotifyOnNewMessage = userSetting.NotifyOnNewMessage;
+                dbEntry.NotifyOnTaskCompletion = userSetting.NotifyOnTaskCompletion;
+                dbEntry.NotifyOnDueDateApproach = userSetting.NotifyOnDueDateApproach;
+                
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
