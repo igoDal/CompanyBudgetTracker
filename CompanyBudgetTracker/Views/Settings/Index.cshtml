@@ -6,16 +6,62 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<div>
-    <h3>Your Settings</h3>
-    <dl class="row">
-        <dt class="col-sm-2">
-            Notifications Enabled:
-        </dt>
-        <dd class="col-sm-10">
-            @Model.EnableNotifications
-        </dd>
-    </dl>
+<form asp-action="Edit" method="post" class="form-horizontal">
+    @Html.AntiForgeryToken()
 
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit Settings</a>
-</div>
+    <div class="form-group">
+        <label asp-for="EnableNotifications" class="control-label">Enable Notifications:</label>
+        <input asp-for="EnableNotifications" type="checkbox" class="form-check-input" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="NotifyByEmail" class="control-label">Notify by Email:</label>
+        <input asp-for="NotifyByEmail" type="checkbox" class="form-check-input" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="NotifyBySMS" class="control-label">Notify by SMS:</label>
+        <input asp-for="NotifyBySMS" type="checkbox" class="form-check-input" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="NotifyInApp" class="control-label">Notify in Application:</label>
+        <input asp-for="NotifyInApp" type="checkbox" class="form-check-input" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="NotifyOnNewMessage" class="control-label">Notify on New Messages:</label>
+        <input asp-for="NotifyOnNewMessage" type="checkbox" class="form-check-input" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="NotifyOnTaskCompletion" class="control-label">Notify on Task Completion:</label>
+        <input asp-for="NotifyOnTaskCompletion" type="checkbox" class="form-check-input" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="NotifyOnDueDateApproach" class="control-label">Notify on Due Date Approach:</label>
+        <input asp-for="NotifyOnDueDateApproach" type="checkbox" class="form-check-input" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Language" class="control-label">Preferred Language:</label>
+        <select asp-for="Language" class="form-control">
+            <option value="en-US">English</option>
+            <option value="es-ES">Spanish</option>
+            <option value="fr-FR">French</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Theme" class="control-label">Theme:</label>
+        <select asp-for="Theme" class="form-control">
+            <option value="Light">Light</option>
+            <option value="Dark">Dark</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </div>
+</form>

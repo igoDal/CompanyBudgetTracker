@@ -22,14 +22,25 @@ public class SettingsController : Controller
 
         if (userSetting == null)
         {
-            userSetting = new UserSettings { UserId = userId, EnableNotifications = true, Theme = "Light" };
-            _context.UserSettings.Add(userSetting);
-            await _context.SaveChangesAsync();
+            userSetting = new UserSettings
+            {
+                UserId = userId,
+                EnableNotifications = true,
+                NotifyByEmail = true,
+                NotifyBySMS = false,
+                NotifyInApp = true,
+                NotifyOnNewMessage = true,
+                NotifyOnTaskCompletion = true,
+                NotifyOnDueDateApproach = true,
+                Language = "en-US",
+                Theme = "Light"
+            };
         }
-    
-        ViewData["Theme"] = userSetting.Theme;
+
         return View(userSetting);
     }
+
+
 
 
     [HttpPost]
