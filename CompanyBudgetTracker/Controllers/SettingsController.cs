@@ -18,7 +18,8 @@ public class SettingsController : Controller
     public async Task<IActionResult> Index()
     {
         var userId = _userManager.GetUserId(User);
-        var userSetting = await _context.UserSettings.FirstOrDefaultAsync(us => us.UserId == userId);
+        var userSetting = await _context.UserSettings.FirstOrDefaultAsync(us => 
+            us.UserId == userId) ?? GetDefaultUserSettings(userId);
 
         if (userSetting == null)
         {
@@ -44,7 +45,8 @@ public class SettingsController : Controller
     public async Task<IActionResult> EditUserSettings()
     {
         var userId = _userManager.GetUserId(User);
-        var userSetting = await _context.UserSettings.FirstOrDefaultAsync(us => us.UserId == userId);
+        var userSetting = await _context.UserSettings.FirstOrDefaultAsync(us => 
+            us.UserId == userId) ?? GetDefaultUserSettings(userId);
 
         if (userSetting == null)
         {
@@ -126,6 +128,23 @@ public class SettingsController : Controller
         }
 
         return View("Index");
+    }
+    
+    private UserSettings GetDefaultUserSettings(string userId)
+    {
+        return new UserSettings
+        {
+            UserId = userId,
+            EnableNotifications = true,
+            NotifyByEmail = true,
+            NotifyBySMS = false,
+            NotifyInApp = true,
+            NotifyOnNewMessage = true,
+            NotifyOnTaskCompletion = true,
+            NotifyOnDueDateApproach = true,
+            Language = "en-US",
+            Theme = "Light"
+        };
     }
     
     
