@@ -5,6 +5,8 @@ using CompanyBudgetTracker.Repositories;
 using CompanyBudgetTracker.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using CompanyBudgetTracker.Context;
+using CompanyBudgetTracker.Models;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,15 +24,32 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<MyDbContext>( options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("MyDbConnection")));
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddDbContext<MyDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MyDbConnection")));
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+    {
+        options.Password.RequireDigit = true;
+        options.Password.RequiredLength = 8;
+        options.Password.RequireUppercase = true;
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+        options.Lockout.MaxFailedAccessAttempts = 5;
+        options.User.RequireUniqueEmail = true;
+    })
     .AddEntityFrameworkStores<MyDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddScoped<ICostIncomeService, CostIncomeService>();
-builder.Services.AddScoped<CostIncomeRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Login";
+    options.AccessDeniedPath = "/Account/AccessDenied";
+    options.ExpireTimeSpan = TimeSpan.FromDays(14);
+    options.SlidingExpiration = true;
+});
 
-
+builder.Services.AddAuthorization(options =>
+{
+});
 
 var app = builder.Build();
 
