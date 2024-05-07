@@ -1,8 +1,3 @@
-using CompanyBudgetTracker.Context;
-using CompanyBudgetTracker.Data.Initializers;
-using CompanyBudgetTracker.Interfaces;
-using CompanyBudgetTracker.Repositories;
-using CompanyBudgetTracker.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using CompanyBudgetTracker.Context;
@@ -21,8 +16,6 @@ builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<MyDbContext>( options => options.UseSqlServer(
-    builder.Configuration.GetConnectionString("MyDbConnection")));
 
 builder.Services.AddDbContext<MyDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MyDbConnection")));
@@ -53,17 +46,10 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
-}
-
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    await RoleInitializer.InitializeAsync(services);
 }
 
 app.UseHttpsRedirection();
@@ -74,6 +60,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Map routes to default or custom controller actions
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
