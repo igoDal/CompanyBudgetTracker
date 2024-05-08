@@ -1,112 +1,112 @@
-﻿
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using CompanyBudgetTracker.Models;
 using CompanyBudgetTracker.Services;
+using Microsoft.AspNetCore.Authorization;
 
-namespace CompanyBudgetTracker.Controllers;
-
-public class AccountController : Controller
+namespace CompanyBudgetTracker.Controllers
 {
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly SignInManager<IdentityUser> _signInManager;
-    private readonly IUserService _userService;
-
-    public AccountController(IUserService userService)
+    public class AccountController : Controller
     {
-        _userService = userService;
-    }
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly IUserService _userService;
 
-    [HttpPost]
-    public async Task<IActionResult> AssignRole(string userId, string roleName)
-    {
-        var result = await _userService.AssignRoleToUserAsync(userId, roleName);
-        if (result.Succeeded)
+        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IUserService userService)
         {
-            return RedirectToAction("Login"); // To-Do: Index or redirect to homepage
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _userService = userService;
         }
 
-        foreach (var error in result.Errors)
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Login(string returnUrl = null)
         {
-            ModelState.AddModelError("", error.Description);
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
         }
 
-        return View("Error");
-    }
-    public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
-    {
-        _userManager = userManager;
-        _signInManager = signInManager;
-    }
-
-    [HttpGet]
-    public IActionResult Login(string returnUrl = null)
-    {
-        ViewData["ReturnUrl"] = returnUrl;
-        return View();
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
-    {
-        ViewData["ReturnUrl"] = returnUrl;
-        if (ModelState.IsValid)
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-            if (result.Succeeded)
+            if (ModelState.IsValid)
             {
-                return RedirectToLocal(returnUrl);
-            }
-            else
-            {
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                if (result.Succeeded)
+                {
+                    return RedirectToLocal(returnUrl);
+                }
+
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                return View(model);
             }
+
+            ViewData["ReturnUrl"] = returnUrl;
+            return View(model);
         }
-        return View(model);
-    }
 
-    [HttpGet]
-    public IActionResult Register(string returnUrl = null)
-    {
-        ViewData["ReturnUrl"] = returnUrl;
-        return View();
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
-    {
-        ViewData["ReturnUrl"] = returnUrl;
-        if (ModelState.IsValid)
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Register(string returnUrl = null)
         {
-            var user = new IdentityUser { UserName = model.Email, Email = model.Email };
-            var result = await _userManager.CreateAsync(user, model.Password);
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new IdentityUser { UserName = model.Email, Email = model.Email };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return RedirectToLocal(returnUrl);
+                }
+                AddErrors(result);
+            }
+
+            ViewData["ReturnUrl"] = returnUrl;
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AssignRole(string userId, string roleName)
+        {
+            var result = await _userService.AssignRoleToUserAsync(userId, roleName);
             if (result.Succeeded)
             {
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToLocal(returnUrl);
+                return RedirectToAction("Index", "Home");
             }
-            AddErrors(result);
-        }
-        return View(model);
-    }
 
-    private void AddErrors(IdentityResult result)
-    {
-        foreach (var error in result.Errors)
-        {
-            ModelState.AddModelError(string.Empty, error.Description);
-        }
-    }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
 
-    private IActionResult RedirectToLocal(string returnUrl)
-    {
-        if (Url.IsLocalUrl(returnUrl))
-        {
-            return Redirect(returnUrl);
+            return View("Error");
         }
-        else
+
+        private void AddErrors(IdentityResult result)
         {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
+
+        private IActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
     }
