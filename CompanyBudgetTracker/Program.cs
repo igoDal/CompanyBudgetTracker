@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using CompanyBudgetTracker.Context;
+using CompanyBudgetTracker.Interfaces;
 using CompanyBudgetTracker.Models;
+using CompanyBudgetTracker.Repositories;
+using CompanyBudgetTracker.Services;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +17,14 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
+// Add repositories
+builder.Services.AddScoped<CostIncomeRepository>();
+
 // Add services to the container.
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICostIncomeService, CostIncomeService>();
+
+
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add(new Microsoft.AspNetCore.Mvc.Authorization.AuthorizeFilter());

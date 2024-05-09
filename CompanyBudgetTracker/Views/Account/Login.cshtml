@@ -1,4 +1,14 @@
 ﻿@model LoginViewModel
+<style>
+    head, body, html {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+    
+    a {
+        color: #bb86fc;
+    }
+</style>
 
 <form asp-action="Login">
     <h2>Login</h2>
@@ -19,3 +29,8 @@
     </div>
     <button type="submit" class="btn btn-default">Log in</button>
 </form>
+
+<p>
+    Don't have an account?
+    <a asp-controller="Account" asp-action="Register">Register here</a>
+</p>
