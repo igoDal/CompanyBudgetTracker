@@ -23,6 +23,7 @@ builder.Services.AddScoped<CostIncomeRepository>();
 // Add services to the container.
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICostIncomeService, CostIncomeService>();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 
 builder.Services.AddControllersWithViews(options =>
