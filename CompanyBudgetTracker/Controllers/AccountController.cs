@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CompanyBudgetTracker.Enums;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using CompanyBudgetTracker.Models;
 using CompanyBudgetTracker.Services;
@@ -64,6 +65,12 @@ namespace CompanyBudgetTracker.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    var roleResult = await _userManager.AddToRoleAsync(user, Roles.User.ToString());
+                    if (!roleResult.Succeeded)
+                    {
+                        AddErrors(roleResult); 
+                    }
+
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToLocal(returnUrl);
                 }

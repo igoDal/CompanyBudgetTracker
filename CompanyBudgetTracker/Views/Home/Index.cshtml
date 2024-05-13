@@ -17,6 +17,9 @@
     <a href="@Url.Action("Index", "CostIncome")" class="btn btn-secondary">CostIncome</a>
     <a href="@Url.Action("Index", "Categories")" class="btn btn-secondary">Categories</a>
     <a href="@Url.Action("Dashboard", "Home")" class="btn btn-secondary">Dashboard</a>
-    <a href="@Url.Action("Index", "Reports")" class="btn btn-secondary">View Reports</a>
+    @if (User.IsInRole("Admin"))
+        {
+            <a href="@Url.Action("Index", "Reports")" class="btn btn-secondary">View Reports</a>
+        }
 
 </div>
