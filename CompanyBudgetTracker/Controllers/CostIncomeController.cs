@@ -93,36 +93,37 @@ public class CostIncomeController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> SaveTransaction(CostIncomeModel model, IFormFile transactionAtt)
+    public async Task<IActionResult> SaveTransaction(CostIncomeModel viewModel, IFormFile transactionAtt)
     {
+        var userId = _currentUserService.GetUserId();
+        viewModel.UserId = userId;
+
         if (transactionAtt != null && transactionAtt.Length > 0)
         {
             using (var memoryStream = new MemoryStream())
             {
                 await transactionAtt.CopyToAsync(memoryStream);
-                model.Attachment = memoryStream.ToArray();
+                viewModel.Attachment = memoryStream.ToArray();
+                viewModel.AttachmentName = transactionAtt.FileName;
+                viewModel.AttachmentContentType = transactionAtt.ContentType;
             }
-            model.AttachmentName = transactionAtt.FileName;
-            model.AttachmentContentType = transactionAtt.ContentType;
         }
-
-        model.UserId = _currentUserService.GetUserId();
 
         if (ModelState.IsValid)
         {
-            await _costIncomeService.SaveAsync(model);
+            await _costIncomeService.SaveAsync(viewModel);
             return RedirectToAction("Index");
         }
-        else
-        {
-            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-            foreach(var error in errors)
-            {
-                Console.WriteLine(error);
-            }
-            return View("NewRecord", model);
-        }
+        
+        var errors = ModelState
+            .Where(x => x.Value.Errors.Count > 0)
+            .SelectMany(x => x.Value.Errors)
+            .Select(e => e.ErrorMessage).ToList();
+        
+        ViewBag.Errors = errors;
+        return View("NewRecord", viewModel);
     }
+
     
     [HttpPost]
     public async Task<IActionResult> DeleteTransaction(int id)

@@ -1,4 +1,6 @@
 ﻿@using CompanyBudgetTracker.Controllers
+@inject CompanyBudgetTracker.Interfaces.ICurrentUserService CurrentUserService
+
 @{
     ViewData["Title"] = "Add New Cost / Income";
 }
@@ -35,22 +37,20 @@
         <h1 class="display-4">Welcome</h1>
         <div class="text-center form-element">
             <div class="form-group">
+                <input type="hidden" id="userId" name="UserId" value="@CurrentUserService.GetUserId()" />
                 <label>Name: </label>
-                <input id="transactionName" name="transactionName" type="text" required/>
-                <div class="validation-message" style="display: none;">This field is required</div>
+                <input id="transactionName" name="Name" type="text" required/>
 
                 <label>Amount: </label>
-                <input id="amount" name="amount" type="number" min="0.01" required/>
-                <div class="validation-message" style="display: none;">This field is required</div>
+                <input id="amount" name="Amount" type="number" min="0.01" required/>
 
-                <select id="transactionType" name="transactionType">
-                    <option id="costType">Cost</option>
-                    <option id="incomeType">Income</option>
+                <select id="transactionType" name="Type">
+                    <option value="Cost">Cost</option>
+                    <option value="Income">Income</option>
                 </select>
 
                 <label>Date: </label>
-                <input id="transactionDate" name="transactionDate" type="date" required/>
-                <div class="validation-message" style="display: none;">This field is required</div>
+                <input id="transactionDate" name="Date" type="date" required/>
             </div>
             
             <div class="form-group">
@@ -64,10 +64,9 @@
                 </select>
             </div>
             <div class="text-center form-element">
-                <label for="transactionAtt">Select attachment: </label>
-                <input id="transactionAtt" name="transactionAtt" type="file" onchange="updateLabel()"/>
+                <label for="transactionAtt">Select attachment (if required): </label>
+                <input id="transactionAtt" name="transactionAtt" type="file" required onchange="updateLabel()"/>
             </div>
-
         </div>
         <div class="text-center form-element">
             <button type="submit" id="submitBtn">Submit</button>
@@ -75,20 +74,14 @@
     </div>
 </form>
 
+
 @section Scripts
 {
     <script type="text/javascript">
         document.getElementById("submitBtn").addEventListener("click", function (event) {
             event.preventDefault();
-        
-            var formData = new FormData();
-            formData.append('Name', document.getElementById("transactionName").value);
-            formData.append('Amount', document.getElementById("amount").value);
-            formData.append('Type', document.getElementById("transactionType").value);
-            formData.append('Date', document.getElementById("transactionDate").value);
-            formData.append('Category', document.getElementById("categoryId").value);
-            formData.append('transactionAtt', document.getElementById("transactionAtt").files[0]);
-        
+            
+            var formData = new FormData(document.getElementById("transactionForm"));
             fetch('@Url.Action("SaveTransaction", "CostIncome")', {
                 method: 'POST',
                 body: formData,
@@ -106,6 +99,7 @@
                 console.error('Error:', error);
             });
         });
+
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>

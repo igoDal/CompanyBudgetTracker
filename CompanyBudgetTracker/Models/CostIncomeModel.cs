@@ -18,7 +18,7 @@ public class CostIncomeModel
     [Required]
     public DateTime Date { get; set; }
     
-    [Required]
+    
     public byte[]? Attachment { get; set; }
     public string? AttachmentName { get; set; }
     public string? AttachmentContentType { get; set; }
