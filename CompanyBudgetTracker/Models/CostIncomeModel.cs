@@ -18,13 +18,16 @@ public class CostIncomeModel
     [Required]
     public DateTime Date { get; set; }
     
-    
     public byte[]? Attachment { get; set; }
+
     public string? AttachmentName { get; set; }
+    
     public string? AttachmentContentType { get; set; }
+    
     public bool Settled { get; set; }
+    
     public int CategoryId { get; set; }
-    public string CategoryName { get; set; }
+    
     public string UserId { get; set; }
 
 }

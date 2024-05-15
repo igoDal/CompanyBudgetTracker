@@ -45,6 +45,8 @@ public class CategoriesController : Controller
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+        ViewBag.Errors = errors; 
 
         return View(category);
     }

@@ -29,6 +29,7 @@ public class CostIncomeService : ICostIncomeService
         catch (Exception ex)
         {
             _logger.LogError("ERR: " + ex);
+            throw;
         }
     }
 

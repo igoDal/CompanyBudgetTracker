@@ -108,7 +108,12 @@ public class CostIncomeController : Controller
                 viewModel.AttachmentContentType = transactionAtt.ContentType;
             }
         }
-
+        
+        if (!_context.Categories.Any(c => c.Id == viewModel.CategoryId))
+        {
+            ModelState.AddModelError("CategoryId", "Selected category is invalid.");
+        }
+        
         if (ModelState.IsValid)
         {
             await _costIncomeService.SaveAsync(viewModel);
