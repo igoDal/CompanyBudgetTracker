@@ -9,11 +9,14 @@ public class SettingsController : Controller
 {
     private readonly MyDbContext _context;
     private readonly ICurrentUserService _currentUserService;
+    private readonly ILogger<SettingsController> _logger;
 
-    public SettingsController(MyDbContext context, ICurrentUserService currentUserService)
+    public SettingsController(MyDbContext context, ICurrentUserService currentUserService, ILogger<SettingsController> logger)
+        
     {
         _context = context;
         _currentUserService = currentUserService;
+        _logger = logger;
     }
 
     public async Task<IActionResult> Index()
@@ -34,22 +37,52 @@ public class SettingsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EditUserSettings(UserSettings model)
     {
+        var currentUserId = _currentUserService.GetUserId();
+        model.UserId = currentUserId;
+
+        if (ModelState.ContainsKey("UserId")) {
+            ModelState.Remove("UserId");
+        }
+
         if (!ModelState.IsValid)
         {
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                _logger.LogError($"Validation Error: {error.ErrorMessage}");
+            }
             return View(model);
         }
 
-        var userSetting = await _context.UserSettings.FindAsync(model.Id);
+        var userSetting = await _context.UserSettings.FirstOrDefaultAsync(us => us.UserId == currentUserId);
         if (userSetting != null)
         {
-            _context.Entry(userSetting).CurrentValues.SetValues(model);
+            userSetting.EnableNotifications = model.EnableNotifications;
+            userSetting.NotifyByEmail = model.NotifyByEmail;
+            userSetting.NotifyBySMS = model.NotifyBySMS;
+            userSetting.NotifyInApp = model.NotifyInApp;
+            userSetting.NotifyOnNewMessage = model.NotifyOnNewMessage;
+            userSetting.NotifyOnTaskCompletion = model.NotifyOnTaskCompletion;
+            userSetting.NotifyOnDueDateApproach = model.NotifyOnDueDateApproach;
+            userSetting.Language = model.Language;
+            userSetting.Theme = model.Theme;
         }
         else
         {
+            model.UserId = currentUserId;
             _context.UserSettings.Add(model);
         }
-        await _context.SaveChangesAsync();
-        return RedirectToAction("Index");
+
+        try
+        {
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"An error occurred while saving user settings: {ex}");
+            ModelState.AddModelError("", "An unexpected error occurred while saving your settings.");
+            return View(model);
+        }
     }
 
     

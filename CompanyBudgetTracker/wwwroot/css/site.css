@@ -20,3 +20,20 @@ html {
 body {
   margin-bottom: 60px;
 }
+body.light-mode {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+body.light-mode .navbar {
+  background-color: #f8f9fa;
+}
+
+body.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+body.dark-mode .navbar {
+  background-color: #333333;
+}

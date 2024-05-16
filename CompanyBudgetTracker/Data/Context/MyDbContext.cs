@@ -50,7 +50,7 @@ public class MyDbContext : IdentityDbContext<IdentityUser>
             .ValueGeneratedOnAdd();
         
         modelBuilder.Entity<UserSettings>()
-            .HasOne<IdentityUser>(s => s.User)
+            .HasOne<IdentityUser>()
             .WithMany()
             .HasForeignKey(s => s.UserId);
     }
