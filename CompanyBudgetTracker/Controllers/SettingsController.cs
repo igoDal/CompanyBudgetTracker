@@ -1,17 +1,18 @@
 ﻿using CompanyBudgetTracker.Context;
+using CompanyBudgetTracker.Controllers;
 using CompanyBudgetTracker.Interfaces;
 using CompanyBudgetTracker.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-public class SettingsController : Controller
+public class SettingsController : BaseController
 {
     private readonly MyDbContext _context;
     private readonly ICurrentUserService _currentUserService;
     private readonly ILogger<SettingsController> _logger;
 
-    public SettingsController(MyDbContext context, ICurrentUserService currentUserService, ILogger<SettingsController> logger)
+    public SettingsController(MyDbContext context, ICurrentUserService currentUserService, ILogger<SettingsController> logger) : base(context, currentUserService)
         
     {
         _context = context;

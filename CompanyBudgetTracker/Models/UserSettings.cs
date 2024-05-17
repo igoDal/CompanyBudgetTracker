@@ -13,5 +13,4 @@ public class UserSettings
     public bool NotifyOnDueDateApproach { get; set; } = true;
     public string Language { get; set; } = "en-US";
     public string Theme { get; set; } = "Light";
-    public virtual IdentityUser User { get; set; }
 }
