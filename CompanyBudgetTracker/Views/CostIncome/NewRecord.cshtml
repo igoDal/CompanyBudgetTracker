@@ -6,6 +6,20 @@
 }
 
 <style>
+    .form-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-gap: 20px;
+        align-items: center;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group.full-width {
+        grid-column: span 4;
+    }
     .form-element {
         margin-bottom: 20px;
     }
@@ -21,41 +35,39 @@
         color: #dc3545; /* Bootstrap danger red  */
         font-size: 0.875em;
     }
-
-    head, body, html {
-        background-color: #121212;
-        color: #e0e0e0;
-    }
-    
-    a {
-        color: #bb86fc;
-    }
 </style>
 
 <form method="post" id="transactionForm" enctype="multipart/form-data" action="@Url.Action("SaveTransaction", "CostIncome")">
     <div class="text-center form-element">
         <h1 class="display-4">Welcome</h1>
-        <div class="text-center form-element">
+        <div class="form-container">
             <div class="form-group">
                 <input type="hidden" id="userId" name="UserId" value="@CurrentUserService.GetUserId()" />
                 <label>Name: </label>
                 <input id="transactionName" name="Name" type="text" required/>
-
+            </div>
+            
+            <div class="form-group">
                 <label>Amount: </label>
                 <input id="amount" name="Amount" type="number" min="0.01" required/>
-
+            </div>
+            
+            <div class="form-group">
+                <label>Type: </label>
                 <select id="transactionType" name="Type">
                     <option value="Cost">Cost</option>
                     <option value="Income">Income</option>
                 </select>
+            </div>
 
+            <div class="form-group">
                 <label>Date: </label>
                 <input id="transactionDate" name="Date" type="date" required/>
             </div>
-            
-            <div class="form-group">
+
+            <div class="form-group full-width">
                 <label for="categoryId">Category: </label>
-                <select id="categoryId" name="CategoryId" class="form-control">
+                <select id="categoryId" name="CategoryId" class="form-control" required>
                     <option value="">Please select a category</option>
                     @foreach (var category in (SelectList)ViewData["Categories"])
                     {
@@ -63,7 +75,8 @@
                     }
                 </select>
             </div>
-            <div class="text-center form-element">
+
+            <div class="form-group full-width">
                 <label for="transactionAtt">Select attachment (if required): </label>
                 <input id="transactionAtt" name="transactionAtt" type="file" required onchange="updateLabel()"/>
             </div>
@@ -73,6 +86,7 @@
         </div>
     </div>
 </form>
+
 
 
 @section Scripts
@@ -137,6 +151,10 @@
                 validateInput('#transactionDate', date !== '');
                 isFormValid &= (date !== '');
     
+                var category = $('#categoryId').val().trim();
+                validateInput('#categoryId', category !== '');
+                isFormValid &= (category !== '');
+    
                 $("#submitBtn").prop('disabled', !isFormValid);
             }
     
@@ -145,6 +163,7 @@
             });
         });
     </script>
+
     
 }
 

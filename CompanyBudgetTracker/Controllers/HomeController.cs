@@ -1,17 +1,19 @@
 using System.Diagnostics;
 using CompanyBudgetTracker.Context;
+using CompanyBudgetTracker.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using CompanyBudgetTracker.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CompanyBudgetTracker.Controllers;
 
-public class HomeController : Controller
+public class HomeController : BaseController
 {
     private readonly ILogger<HomeController> _logger;
     private readonly MyDbContext _context;
+    private readonly ICurrentUserService _currentUserService;
 
-    public HomeController(ILogger<HomeController> logger, MyDbContext context)
+    public HomeController(ILogger<HomeController> logger, MyDbContext context, ICurrentUserService currentUserService) : base (context, currentUserService)
     {
         _logger = logger;
         _context = context;

@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CompanyBudgetTracker.Controllers;
 
-public class CostIncomeController : Controller
+public class CostIncomeController : BaseController
 {
     private readonly ILogger<CostIncomeController> _logger;
     private readonly MyDbContext _context;
@@ -24,7 +24,7 @@ public class CostIncomeController : Controller
         ILogger<CostIncomeController> logger,
         MyDbContext context,
         ICostIncomeService costIncomeService,
-        ICurrentUserService currentUserService)
+        ICurrentUserService currentUserService) : base(context, currentUserService)
     {
         _logger = logger;
         _context = context;

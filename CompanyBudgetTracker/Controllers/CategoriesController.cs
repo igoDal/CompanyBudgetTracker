@@ -3,15 +3,17 @@ using CompanyBudgetTracker.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using CompanyBudgetTracker.Context;
 using System.Linq;
+using CompanyBudgetTracker.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace CompanyBudgetTracker.Controllers;
 
-public class CategoriesController : Controller
+public class CategoriesController : BaseController
 {
     private readonly MyDbContext _context;
 
-    public CategoriesController(MyDbContext context)
+    public CategoriesController(MyDbContext context, ICurrentUserService currentUserService)
+        : base(context, currentUserService)
     {
         _context = context;
     }

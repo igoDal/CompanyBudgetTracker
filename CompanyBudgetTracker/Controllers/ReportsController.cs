@@ -1,4 +1,5 @@
 ﻿using CompanyBudgetTracker.Context;
+using CompanyBudgetTracker.Interfaces;
 using CompanyBudgetTracker.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,11 +8,12 @@ using Microsoft.EntityFrameworkCore;
 namespace CompanyBudgetTracker.Controllers;
 
 [Authorize(Roles = "Admin")]
-public class ReportsController : Controller
+public class ReportsController : BaseController
 {
     private readonly MyDbContext _context;
+    private readonly ICurrentUserService _currentUserService;
 
-    public ReportsController(MyDbContext context)
+    public ReportsController(MyDbContext context, ICurrentUserService currentUserService) : base(context, currentUserService)
     {
         _context = context;
     }
