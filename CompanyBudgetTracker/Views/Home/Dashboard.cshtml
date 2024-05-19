@@ -6,20 +6,20 @@
     }
 </style>
 
-<form asp-action="Dashboard" method="get">
+<form id="dateForm" asp-action="Dashboard" method="get">
     <div class="date-selection">
         <label for="startDate">From:</label>
-        <input type="date" id="startDate" name="startDate" />
+        <input type="date" id="startDate" name="startDate" value="@Model.StartDate.ToString("yyyy-MM-dd")" />
 
         <label for="endDate">To:</label>
-        <input type="date" id="endDate" name="endDate" />
+        <input type="date" id="endDate" name="endDate" value="@Model.EndDate.ToString("yyyy-MM-dd")" />
 
         <button type="submit">Show</button>
     </div>
     <div class="predefined-ranges">
-        <button type="submit" formaction="@Url.Action("Dashboard", new { range = "last30Days" })">Last 30 Days</button>
-        <button type="submit" formaction="@Url.Action("Dashboard", new { range = "last3Months" })">Last 3 Months</button>
-        <button type="submit" formaction="@Url.Action("Dashboard", new { range = "lastYear" })">Last Year</button>
+        <button type="button" onclick="setDateRange('last30days')">Last 30 Days</button>
+        <button type="button" onclick="setDateRange('last3months')">Last 3 Months</button>
+        <button type="button" onclick="setDateRange('lastyear')">Last Year</button>
     </div>
 </form>
 
@@ -66,19 +66,35 @@
         });
     </script>
     <script>
-        window.onload = function() {
-            var startDate = document.getElementById('startDate');
-            var endDate = document.getElementById('endDate');
-    
-            if (!startDate.value) {
-                startDate.valueAsDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+        function setDateRange(range) {
+            const form = document.getElementById('dateForm');
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+
+            let startDate, endDate;
+
+            switch (range) {
+                case 'last30days':
+                    startDate = new Date();
+                    startDate.setDate(startDate.getDate() - 30);
+                    endDate = new Date();
+                    break;
+                case 'last3months':
+                    startDate = new Date();
+                    startDate.setMonth(startDate.getMonth() - 3);
+                    endDate = new Date();
+                    break;
+                case 'lastyear':
+                    startDate = new Date();
+                    startDate.setFullYear(startDate.getFullYear() - 1);
+                    endDate = new Date();
+                    break;
             }
-    
-            if (!endDate.value) {
-                var today = new Date();
-                endDate.valueAsDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-            }
-        };
+
+            startDateInput.value = startDate.toISOString().split('T')[0];
+            endDateInput.value = endDate.toISOString().split('T')[0];
+
+            form.submit();
+        }
     </script>
-    
 }

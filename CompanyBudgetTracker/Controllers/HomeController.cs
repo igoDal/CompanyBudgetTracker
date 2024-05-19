@@ -58,20 +58,25 @@ public class HomeController : BaseController
                 calculatedEndDate = endDate ?? DateTime.Today;
                 break;
         }
+
         var viewModel = new DashboardModel
         {
             TotalIncome = await _context.CostIncomes
-                .Where(x => x.Type == "Income")
+                .Where(x => x.Type == "Income" && x.Date >= calculatedStartDate && x.Date <= calculatedEndDate)
                 .SumAsync(x => x.Amount),
             TotalExpenses = await _context.CostIncomes
-                .Where(x => x.Type == "Cost")
-                .SumAsync(x => x.Amount)
+                .Where(x => x.Type == "Cost" && x.Date >= calculatedStartDate && x.Date <= calculatedEndDate)
+                .SumAsync(x => x.Amount),
+            StartDate = calculatedStartDate,
+            EndDate = calculatedEndDate
         };
 
         viewModel.ResultIncome = viewModel.TotalIncome - viewModel.TotalExpenses;
 
         return View(viewModel);
     }
+
+
     
     public async Task<IActionResult> FinancialHealth()
     {
