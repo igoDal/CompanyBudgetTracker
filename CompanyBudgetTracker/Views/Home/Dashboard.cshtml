@@ -1,8 +1,17 @@
 ﻿@model DashboardModel
 <style>
     .dashboard {
-        max-width: 600px;
+        max-width: 800px;
         margin: auto;
+    }
+    .chart-container {
+        position: relative;
+        height: 400px;
+    }
+    canvas {
+        display: block;
+        width: 100% !important;
+        height: auto !important;
     }
 </style>
 
@@ -25,46 +34,32 @@
 
 <div class="dashboard">
     <h2>Dashboard</h2>
-    <canvas id="incomeVsExpensesChart" width="400" height="200"></canvas>
+    <div class="chart-container">
+        <canvas id="incomeVsExpensesChart"></canvas>
+    </div>
     <div>Total Income: @Model.TotalIncome</div>
     <div>Total Expenses: @Model.TotalExpenses</div>
     <div>Net Income: @Model.ResultIncome</div>
+
+    <h3>Income by Category</h3>
+    <div class="chart-container" data-income-by-category='@Json.Serialize(Model.IncomeByCategory)'>
+        <canvas id="incomeByCategoryChart"></canvas>
+    </div>
+
+    <h3>Expenses by Category</h3>
+    <div class="chart-container" data-expenses-by-category='@Json.Serialize(Model.ExpensesByCategory)'>
+        <canvas id="expensesByCategoryChart"></canvas>
+    </div>
+
+    <h3>Monthly Breakdown</h3>
+    <div class="chart-container" data-monthly-breakdowns='@Json.Serialize(Model.MonthlyDashboards)'>
+        <canvas id="monthlyBreakdownChart"></canvas>
+    </div>
 </div>
 
 @section Scripts
 {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        var ctx = document.getElementById('incomeVsExpensesChart').getContext('2d');
-        var incomeVsExpensesChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Income', 'Expenses', 'Net Income'],
-                datasets: [{
-                    label: 'Amount',
-                    data: [@Model.TotalIncome, @Model.TotalExpenses, @Model.ResultIncome],
-                    backgroundColor: [
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(153, 102, 255, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(153, 102, 255, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    </script>
     <script>
         function setDateRange(range) {
             const form = document.getElementById('dateForm');
@@ -95,6 +90,136 @@
             endDateInput.value = endDate.toISOString().split('T')[0];
 
             form.submit();
+        }
+
+        function getDataFromContainer(container, dataKey) {
+            return JSON.parse(container.getAttribute(dataKey));
+        }
+
+        const incomeByCategoryContainer = document.querySelector('[data-income-by-category]');
+        const incomeByCategoryData = getDataFromContainer(incomeByCategoryContainer, 'data-income-by-category');
+
+        const expensesByCategoryContainer = document.querySelector('[data-expenses-by-category]');
+        const expensesByCategoryData = getDataFromContainer(expensesByCategoryContainer, 'data-expenses-by-category');
+
+        const monthlyBreakdownsContainer = document.querySelector('[data-monthly-breakdowns]');
+        const monthlyBreakdownsData = getDataFromContainer(monthlyBreakdownsContainer, 'data-monthly-breakdowns');
+
+        const incomeVsExpensesCtx = document.getElementById('incomeVsExpensesChart').getContext('2d');
+        const incomeVsExpensesChart = new Chart(incomeVsExpensesCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Income', 'Expenses', 'Net Income'],
+                datasets: [{
+                    label: 'Amount',
+                    data: [@Model.TotalIncome, @Model.TotalExpenses, @Model.ResultIncome],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(153, 102, 255, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        const incomeByCategoryCtx = document.getElementById('incomeByCategoryChart').getContext('2d');
+        const incomeByCategoryLabels = Object.keys(incomeByCategoryData);
+        const incomeByCategoryAmounts = Object.values(incomeByCategoryData);
+        const incomeByCategoryChart = new Chart(incomeByCategoryCtx, {
+            type: 'pie',
+            data: {
+                labels: incomeByCategoryLabels,
+                datasets: [{
+                    label: 'Income by Category',
+                    data: incomeByCategoryAmounts,
+                    backgroundColor: generateColors(incomeByCategoryLabels.length),
+                    borderColor: 'rgba(0, 0, 0, 0.1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        const expensesByCategoryCtx = document.getElementById('expensesByCategoryChart').getContext('2d');
+        const expensesByCategoryLabels = Object.keys(expensesByCategoryData);
+        const expensesByCategoryAmounts = Object.values(expensesByCategoryData);
+        const expensesByCategoryChart = new Chart(expensesByCategoryCtx, {
+            type: 'pie',
+            data: {
+                labels: expensesByCategoryLabels,
+                datasets: [{
+                    label: 'Expenses by Category',
+                    data: expensesByCategoryAmounts,
+                    backgroundColor: generateColors(expensesByCategoryLabels.length),
+                    borderColor: 'rgba(0, 0, 0, 0.1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        const monthlyBreakdownCtx = document.getElementById('monthlyBreakdownChart').getContext('2d');
+        const monthlyBreakdownLabels = monthlyBreakdownsData.map(mb => mb.Month);
+        const monthlyIncomeData = monthlyBreakdownsData.map(mb => mb.Income);
+        const monthlyExpensesData = monthlyBreakdownsData.map(mb => mb.Expenses);
+        const monthlyBreakdownChart = new Chart(monthlyBreakdownCtx, {
+            type: 'line',
+            data: {
+                labels: monthlyBreakdownLabels,
+                datasets: [
+                    {
+                        label: 'Income',
+                        data: monthlyIncomeData,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        fill: false
+                    },
+                    {
+                        label: 'Expenses',
+                        data: monthlyExpensesData,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        function generateColors(numColors) {
+            const colors = [];
+            for (let i = 0; i < numColors; i++) {
+                const r = Math.floor(Math.random() * 255);
+                const g = Math.floor(Math.random() * 255);
+                const b = Math.floor(Math.random() * 255);
+                colors.push(`rgba(${r}, ${g}, ${b}, 0.2)`);
+            }
+            return colors;
         }
     </script>
 }

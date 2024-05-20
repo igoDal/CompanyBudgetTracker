@@ -59,24 +59,60 @@ public class HomeController : BaseController
                 break;
         }
 
+        var totalIncome = await _context.CostIncomes
+            .Where(x => x.Type == "Income" && x.Date >= calculatedStartDate && x.Date <= calculatedEndDate)
+            .SumAsync(x => x.Amount);
+
+        var totalExpenses = await _context.CostIncomes
+            .Where(x => x.Type == "Cost" && x.Date >= calculatedStartDate && x.Date <= calculatedEndDate)
+            .SumAsync(x => x.Amount);
+
+        var incomeByCategory = await _context.CostIncomes
+            .Where(x => x.Type == "Income" && x.Date >= calculatedStartDate && x.Date <= calculatedEndDate)
+            .Join(_context.Categories,
+                  ci => ci.CategoryId,
+                  c => c.Id,
+                  (ci, c) => new { ci, c })
+            .GroupBy(x => x.c.Name)
+            .Select(g => new { Category = g.Key, Amount = g.Sum(x => x.ci.Amount) })
+            .ToDictionaryAsync(x => x.Category, x => x.Amount);
+
+        var expensesByCategory = await _context.CostIncomes
+            .Where(x => x.Type == "Cost" && x.Date >= calculatedStartDate && x.Date <= calculatedEndDate)
+            .Join(_context.Categories,
+                  ci => ci.CategoryId,
+                  c => c.Id,
+                  (ci, c) => new { ci, c })
+            .GroupBy(x => x.c.Name)
+            .Select(g => new { Category = g.Key, Amount = g.Sum(x => x.ci.Amount) })
+            .ToDictionaryAsync(x => x.Category, x => x.Amount);
+
+        var monthlyDashboards = await _context.CostIncomes
+            .Where(x => x.Date >= calculatedStartDate && x.Date <= calculatedEndDate)
+            .GroupBy(x => new { x.Date.Year, x.Date.Month, x.Type })
+            .Select(g => new MonthlyDashboard
+            {
+                Month = g.Key.Month + "/" + g.Key.Year,
+                Income = g.Key.Type == "Income" ? g.Sum(x => x.Amount) : 0,
+                Expenses = g.Key.Type == "Cost" ? g.Sum(x => x.Amount) : 0
+            })
+            .ToListAsync();
+
         var viewModel = new DashboardModel
         {
-            TotalIncome = await _context.CostIncomes
-                .Where(x => x.Type == "Income" && x.Date >= calculatedStartDate && x.Date <= calculatedEndDate)
-                .SumAsync(x => x.Amount),
-            TotalExpenses = await _context.CostIncomes
-                .Where(x => x.Type == "Cost" && x.Date >= calculatedStartDate && x.Date <= calculatedEndDate)
-                .SumAsync(x => x.Amount),
+            TotalIncome = totalIncome,
+            TotalExpenses = totalExpenses,
+            ResultIncome = totalIncome - totalExpenses,
             StartDate = calculatedStartDate,
-            EndDate = calculatedEndDate
+            EndDate = calculatedEndDate,
+            IncomeByCategory = incomeByCategory,
+            ExpensesByCategory = expensesByCategory,
+            MonthlyDashboards = monthlyDashboards
         };
-
-        viewModel.ResultIncome = viewModel.TotalIncome - viewModel.TotalExpenses;
 
         return View(viewModel);
     }
-
-
+    
     
     public async Task<IActionResult> FinancialHealth()
     {
