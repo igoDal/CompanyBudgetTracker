@@ -10,24 +10,28 @@ public class SettingsController : BaseController
 {
     private readonly MyDbContext _context;
     private readonly ICurrentUserService _currentUserService;
+    private readonly UserManager<IdentityUser> _userManager;
     private readonly ILogger<SettingsController> _logger;
 
-    public SettingsController(MyDbContext context, ICurrentUserService currentUserService, ILogger<SettingsController> logger) : base(context, currentUserService)
-        
+    public SettingsController(
+        MyDbContext context,
+        ICurrentUserService currentUserService,
+        UserManager<IdentityUser> userManager,
+        ILogger<SettingsController> logger) 
+        : base(context, currentUserService)
     {
         _context = context;
         _currentUserService = currentUserService;
+        _userManager = userManager;
         _logger = logger;
     }
 
     public async Task<IActionResult> Index()
     {
         var userSetting = await GetUserSettings();
-        
         return View(userSetting);
     }
 
-    
     public async Task<IActionResult> EditUserSettings()
     {
         var userSetting = await GetUserSettings();
@@ -41,7 +45,8 @@ public class SettingsController : BaseController
         var currentUserId = _currentUserService.GetUserId();
         model.UserId = currentUserId;
 
-        if (ModelState.ContainsKey("UserId")) {
+        if (ModelState.ContainsKey("UserId"))
+        {
             ModelState.Remove("UserId");
         }
 
@@ -86,7 +91,50 @@ public class SettingsController : BaseController
         }
     }
 
-    
+    public async Task<IActionResult> PersonalData()
+    {
+        var currentUserId = _currentUserService.GetUserId();
+        var user = await _userManager.FindByIdAsync(currentUserId);
+        
+        var model = new PersonalDataViewModel
+        {
+            Id = user.Id,
+            Email = user.Email,
+        };
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> SavePersonalData(PersonalDataViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View("PersonalData", model);
+        }
+
+        var user = await _userManager.FindByIdAsync(model.Id);
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        user.Email = model.Email;
+
+        var result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            return View("PersonalData", model);
+        }
+
+        return RedirectToAction("Index");
+    }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> SaveAlertSettings(AlertSetting model)
@@ -139,6 +187,4 @@ public class SettingsController : BaseController
             Theme = "Light"
         };
     }
-    
-    
 }
