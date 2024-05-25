@@ -1,0 +1,12 @@
+@model EditUserViewModel
+
+<h2>Edit User</h2>
+
+<form asp-action="EditUser" method="post">
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
