@@ -28,4 +28,10 @@
       <PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00972" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Migrations\MyDbContextModelSnapshot.cs" />
+      <Compile Remove="Migrations\20240515192457_UpdatedCostIncome.cs" />
+      <Compile Remove="Migrations\20240515192457_UpdatedCostIncome.Designer.cs" />
+    </ItemGroup>
+
 </Project>

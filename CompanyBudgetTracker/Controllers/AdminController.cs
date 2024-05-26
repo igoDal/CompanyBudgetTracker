@@ -1,7 +1,10 @@
+using System.Linq;
 using System.Threading.Tasks;
 using CompanyBudgetTracker.Context;
+using CompanyBudgetTracker.Enums;
 using CompanyBudgetTracker.Interfaces;
 using CompanyBudgetTracker.Models;
+using CompanyBudgetTracker.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +16,7 @@ namespace CompanyBudgetTracker.Controllers
     public class AdminController : BaseController
     {
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IUserService _userService;
         private readonly ILogger<AdminController> _logger;
         private readonly MyDbContext _context;
 
@@ -20,10 +24,12 @@ namespace CompanyBudgetTracker.Controllers
             MyDbContext context, 
             ICurrentUserService currentUserService, 
             UserManager<IdentityUser> userManager,
+            IUserService userService,
             ILogger<AdminController> logger
         ) : base(context, currentUserService)
         {
             _userManager = userManager;
+            _userService = userService;
             _logger = logger;
             _context = context;
         }
@@ -42,11 +48,16 @@ namespace CompanyBudgetTracker.Controllers
                 return NotFound();
             }
 
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var allRoles = Enum.GetNames(typeof(Roles)).ToList();
+
             var model = new EditUserViewModel
             {
                 Id = user.Id,
                 Email = user.Email,
-                // Add other properties as needed
+                Roles = userRoles,
+                AllRoles = allRoles,
+                SelectedRoles = userRoles
             };
 
             return View(model);
@@ -68,20 +79,48 @@ namespace CompanyBudgetTracker.Controllers
             }
 
             user.Email = model.Email;
-            // Update other properties as needed
 
             var result = await _userManager.UpdateAsync(user);
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                return RedirectToAction(nameof(Index));
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return View(model);
             }
 
-            foreach (var error in result.Errors)
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var rolesToAdd = model.SelectedRoles.Except(userRoles).ToList();
+            var rolesToRemove = userRoles.Except(model.SelectedRoles).ToList();
+
+            if (rolesToAdd.Any())
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                result = await _userManager.AddToRolesAsync(user, rolesToAdd);
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View(model);
+                }
             }
 
-            return View(model);
+            if (rolesToRemove.Any())
+            {
+                result = await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View(model);
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
@@ -95,14 +134,12 @@ namespace CompanyBudgetTracker.Controllers
             }
 
             var result = await _userManager.DeleteAsync(user);
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                return RedirectToAction(nameof(Index));
-            }
-
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
 
             return RedirectToAction(nameof(Index));

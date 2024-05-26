@@ -8,5 +8,12 @@
         <input asp-for="Email" class="form-control" />
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>
+
+    <div class="form-group">
+        <label>Roles</label>
+        <select asp-for="SelectedRoles" asp-items="@(new MultiSelectList(Model.AllRoles))" class="form-control" multiple="multiple">
+        </select>
+    </div>
+
     <button type="submit" class="btn btn-primary">Save</button>
 </form>

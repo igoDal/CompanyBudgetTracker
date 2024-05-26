@@ -25,7 +25,6 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICostIncomeService, CostIncomeService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
-
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add(new Microsoft.AspNetCore.Mvc.Authorization.AuthorizeFilter());
@@ -60,6 +59,21 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        await EnsureRolesExist(roleManager);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while ensuring roles exist.");
+    }
+}
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -85,3 +99,16 @@ app.MapFallback(context =>
 });
 
 app.Run();
+
+async Task EnsureRolesExist(RoleManager<IdentityRole> roleManager)
+{
+    string[] roleNames = { "Admin", "User" };
+    foreach (var roleName in roleNames)
+    {
+        var roleExist = await roleManager.RoleExistsAsync(roleName);
+        if (!roleExist)
+        {
+            await roleManager.CreateAsync(new IdentityRole(roleName));
+        }
+    }
+}
