@@ -1,0 +1,33 @@
+@model UserSettings
+
+<h3>General Settings</h3>
+<dl class="row">
+    <dt class="col-sm-4">Enable Notifications:</dt>
+    <dd class="col-sm-8">@Model.EnableNotifications</dd>
+
+    <dt class="col-sm-4">Notify by Email:</dt>
+    <dd class="col-sm-8">@Model.NotifyByEmail</dd>
+
+    <dt class="col-sm-4">Notify by SMS:</dt>
+    <dd class="col-sm-8">@Model.NotifyBySMS</dd>
+
+    <dt class="col-sm-4">Notify in Application:</dt>
+    <dd class="col-sm-8">@Model.NotifyInApp</dd>
+
+    <dt class="col-sm-4">Notify on New Messages:</dt>
+    <dd class="col-sm-8">@Model.NotifyOnNewMessage</dd>
+
+    <dt class="col-sm-4">Notify on Task Completion:</dt>
+    <dd class="col-sm-8">@Model.NotifyOnTaskCompletion</dd>
+
+    <dt class="col-sm-4">Notify as Due Dates Approach:</dt>
+    <dd class="col-sm-8">@Model.NotifyOnDueDateApproach</dd>
+
+    <dt class="col-sm-4">Preferred Language:</dt>
+    <dd class="col-sm-8">@Model.Language</dd>
+
+    <dt class="col-sm-4">Theme:</dt>
+    <dd class="col-sm-8">@Model.Theme</dd>
+</dl>
+
+<a class="btn btn-primary" asp-action="EditUserSettings">Edit Settings</a>

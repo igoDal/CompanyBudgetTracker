@@ -6,36 +6,19 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<div>
-    <h3>Your Settings</h3>
-    <dl class="row">
-        <dt class="col-sm-4">Enable Notifications:</dt>
-        <dd class="col-sm-8">@Model.EnableNotifications</dd>
-
-        <dt class="col-sm-4">Notify by Email:</dt>
-        <dd class="col-sm-8">@Model.NotifyByEmail</dd>
-
-        <dt class="col-sm-4">Notify by SMS:</dt>
-        <dd class="col-sm-8">@Model.NotifyBySMS</dd>
-
-        <dt class="col-sm-4">Notify in Application:</dt>
-        <dd class="col-sm-8">@Model.NotifyInApp</dd>
-
-        <dt class="col-sm-4">Notify on New Messages:</dt>
-        <dd class="col-sm-8">@Model.NotifyOnNewMessage</dd>
-
-        <dt class="col-sm-4">Notify on Task Completion:</dt>
-        <dd class="col-sm-8">@Model.NotifyOnTaskCompletion</dd>
-
-        <dt class="col-sm-4">Notify as Due Dates Approach:</dt>
-        <dd class="col-sm-8">@Model.NotifyOnDueDateApproach</dd>
-
-        <dt class="col-sm-4">Preferred Language:</dt>
-        <dd class="col-sm-8">@Model.Language</dd>
-
-        <dt class="col-sm-4">Theme:</dt>
-        <dd class="col-sm-8">@Model.Theme</dd>
-    </dl>
-
-    <a class="btn btn-primary" asp-action="EditUserSettings">Edit Settings</a>
+<ul class="nav nav-tabs" id="settingsTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active" id="general-tab" data-bs-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true">General</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" id="personal-data-tab" data-bs-toggle="tab" href="#personal-data" role="tab" aria-controls="personal-data" aria-selected="false">Personal Data</a>
+    </li>
+</ul>
+<div class="tab-content" id="settingsTabsContent">
+    <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
+        @await Html.PartialAsync("_GeneralSettings", Model)
+    </div>
+    <div class="tab-pane fade" id="personal-data" role="tabpanel" aria-labelledby="personal-data-tab">
+        @await Html.PartialAsync("_PersonalData")
+    </div>
 </div>
