@@ -1,3 +1,8 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
 using CompanyBudgetTracker.Context;
@@ -5,10 +10,6 @@ using CompanyBudgetTracker.Enums;
 using CompanyBudgetTracker.Interfaces;
 using CompanyBudgetTracker.Models;
 using CompanyBudgetTracker.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CompanyBudgetTracker.Controllers
 {
@@ -16,6 +17,7 @@ namespace CompanyBudgetTracker.Controllers
     public class AdminController : BaseController
     {
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUserService _userService;
         private readonly ILogger<AdminController> _logger;
         private readonly MyDbContext _context;
@@ -24,11 +26,13 @@ namespace CompanyBudgetTracker.Controllers
             MyDbContext context, 
             ICurrentUserService currentUserService, 
             UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager,
             IUserService userService,
             ILogger<AdminController> logger
         ) : base(context, currentUserService)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _userService = userService;
             _logger = logger;
             _context = context;
@@ -143,6 +147,102 @@ namespace CompanyBudgetTracker.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+    
+        public IActionResult Roles()
+        {
+            var roles = _roleManager.Roles.ToList();
+            return View(roles);
+        }
+
+        public IActionResult CreateRole()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateRole(CreateRoleViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var role = new IdentityRole(model.RoleName);
+                var result = await _roleManager.CreateAsync(role);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction(nameof(Roles));
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            return View(model);
+        }
+
+        public async Task<IActionResult> EditRole(string id)
+        {
+            var role = await _roleManager.FindByIdAsync(id);
+            if (role == null)
+            {
+                return NotFound();
+            }
+
+            var model = new EditRoleViewModel
+            {
+                Id = role.Id,
+                RoleName = role.Name,
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditRole(EditRoleViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var role = await _roleManager.FindByIdAsync(model.Id);
+                if (role == null)
+                {
+                    return NotFound();
+                }
+
+                role.Name = model.RoleName;
+                var result = await _roleManager.UpdateAsync(role);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction(nameof(Roles));
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteRole(string id)
+        {
+            var role = await _roleManager.FindByIdAsync(id);
+            if (role == null)
+            {
+                return NotFound();
+            }
+
+            var result = await _roleManager.DeleteAsync(role);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            return RedirectToAction(nameof(Roles));
         }
     }
 }
