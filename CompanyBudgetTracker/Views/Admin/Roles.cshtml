@@ -1,0 +1,29 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+
+<h2>Roles</h2>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Role Name</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var role in Model)
+    {
+        <tr>
+            <td>@role.Name</td>
+            <td>
+                <a asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-sm btn-primary">Edit</a>
+                <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a asp-action="CreateRole" class="btn btn-primary">Create New Role</a>
