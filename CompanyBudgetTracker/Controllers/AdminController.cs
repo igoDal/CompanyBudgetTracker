@@ -148,6 +148,26 @@ namespace CompanyBudgetTracker.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> UserDetails(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            var model = new UserDetailsViewModel
+            {
+                Id = user.Id,
+                Email = user.Email,
+                UserName = user.UserName,
+                Roles = userRoles,
+            };
+
+            return View(model);
+        }
     
         public IActionResult Roles()
         {

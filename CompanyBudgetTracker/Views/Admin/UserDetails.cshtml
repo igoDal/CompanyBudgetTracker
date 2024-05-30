@@ -1,0 +1,31 @@
+@model UserDetailsViewModel
+
+<h2>User Details</h2>
+
+<div class="form-group">
+    <label>Id:</label>
+    <span>@Model.Id</span>
+</div>
+<div class="form-group">
+    <label>Email:</label>
+    <span>@Model.Email</span>
+</div>
+<div class="form-group">
+    <label>Username:</label>
+    <span>@Model.UserName</span>
+</div>
+<div class="form-group">
+    <label>Roles:</label>
+    <ul>
+        @foreach (var role in Model.Roles)
+        {
+            <li>@role</li>
+        }
+    </ul>
+</div>
+
+<a asp-action="Index" class="btn btn-primary">Back to Users List</a>
+<a asp-action="EditUser" asp-route-id="@Model.Id" class="btn btn-warning">Edit User</a>
+<form asp-action="DeleteUser" asp-route-id="@Model.Id" method="post" style="display:inline;">
+    <button type="submit" class="btn btn-danger">Delete User</button>
+</form>
