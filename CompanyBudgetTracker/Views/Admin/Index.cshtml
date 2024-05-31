@@ -3,6 +3,13 @@
 
 <h2>Users</h2>
 
+<form method="get" asp-action="Index">
+    <div class="form-group">
+        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Search by email or username" />
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
@@ -26,4 +33,3 @@
         }
     </tbody>
 </table>
-

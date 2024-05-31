@@ -38,11 +38,19 @@ namespace CompanyBudgetTracker.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            var users = await _context.Users.ToListAsync();
-            return View(users);
+            var users = from u in _context.Users
+                select u;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                users = users.Where(s => s.Email.Contains(searchString) || s.UserName.Contains(searchString));
+            }
+
+            return View(await users.ToListAsync());
         }
+
 
         public async Task<IActionResult> EditUser(string id)
         {
