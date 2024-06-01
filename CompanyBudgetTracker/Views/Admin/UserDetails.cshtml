@@ -15,6 +15,10 @@
     <span>@Model.UserName</span>
 </div>
 <div class="form-group">
+    <label>Status:</label>
+    <span>@(Model.IsActive ? "Active" : "Inactive")</span>
+</div>
+<div class="form-group">
     <label>Roles:</label>
     <ul>
         @foreach (var role in Model.Roles)
@@ -26,6 +30,9 @@
 
 <a asp-action="Index" class="btn btn-primary">Back to Users List</a>
 <a asp-action="EditUser" asp-route-id="@Model.Id" class="btn btn-warning">Edit User</a>
+<form asp-action="ToggleUserStatus" asp-route-id="@Model.Id" method="post" style="display:inline;">
+    <button type="submit" class="btn btn-warning">@((Model.IsActive ? "Deactivate" : "Activate"))</button>
+</form>
 <form asp-action="DeleteUser" asp-route-id="@Model.Id" method="post" style="display:inline;">
     <button type="submit" class="btn btn-danger">Delete User</button>
 </form>

@@ -16,7 +16,7 @@ namespace CompanyBudgetTracker.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminController : BaseController
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUserService _userService;
         private readonly ILogger<AdminController> _logger;
@@ -25,7 +25,7 @@ namespace CompanyBudgetTracker.Controllers
         public AdminController(
             MyDbContext context, 
             ICurrentUserService currentUserService, 
-            UserManager<IdentityUser> userManager,
+            UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IUserService userService,
             ILogger<AdminController> logger
@@ -40,6 +40,8 @@ namespace CompanyBudgetTracker.Controllers
 
         public async Task<IActionResult> Index(string searchString)
         {
+            ViewData["CurrentFilter"] = searchString;
+
             var users = from u in _context.Users
                 select u;
 
@@ -50,7 +52,6 @@ namespace CompanyBudgetTracker.Controllers
 
             return View(await users.ToListAsync());
         }
-
 
         public async Task<IActionResult> EditUser(string id)
         {
@@ -272,5 +273,28 @@ namespace CompanyBudgetTracker.Controllers
 
             return RedirectToAction(nameof(Roles));
         }
+        
+        public async Task<IActionResult> ToggleUserStatus(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            user.IsActive = !user.IsActive;
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return RedirectToAction(nameof(Index));
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

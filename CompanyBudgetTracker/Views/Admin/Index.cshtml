@@ -1,5 +1,4 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
 
 <h2>Users</h2>
 
@@ -9,27 +8,31 @@
         <button type="submit" class="btn btn-primary">Search</button>
     </div>
 </form>
-
 <table class="table">
     <thead>
-        <tr>
-            <th>Email</th>
-            <th>Actions</th>
-        </tr>
+    <tr>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
     </thead>
     <tbody>
-        @foreach (var user in Model)
-        {
-            <tr>
-                <td>@user.Email</td>
-                <td>
-                    <a asp-action="UserDetails" asp-route-id="@user.Id" class="btn btn-sm btn-info">Details</a>
-                    <a asp-action="EditUser" asp-route-id="@user.Id" class="btn btn-sm btn-primary">Edit</a>
-                    <form asp-action="DeleteUser" asp-route-id="@user.Id" method="post" style="display:inline;">
-                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                    </form>
-                </td>
-            </tr>
-        }
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.Email</td>
+            <td>@(user.IsActive ? "Active" : "Inactive")</td>
+            <td>
+                <a asp-action="UserDetails" asp-route-id="@user.Id" class="btn btn-sm btn-info">Details</a>
+                <a asp-action="EditUser" asp-route-id="@user.Id" class="btn btn-sm btn-primary">Edit</a>
+                <form asp-action="ToggleUserStatus" asp-route-id="@user.Id" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-warning">@((user.IsActive ? "Deactivate" : "Activate"))</button>
+                </form>
+                <form asp-action="DeleteUser" asp-route-id="@user.Id" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
     </tbody>
 </table>
