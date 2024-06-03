@@ -295,6 +295,72 @@ namespace CompanyBudgetTracker.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        
+        public async Task<IActionResult> Manage2FA(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var model = new ManageTwoFAViewModel
+            {
+                UserId = user.Id,
+                Email = user.Email,
+                Is2FAEnabled = await _userManager.GetTwoFactorEnabledAsync(user)
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Enable2FA(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+
+            var result = await _userManager.SetTwoFactorEnabledAsync(user, true);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return RedirectToAction(nameof(Manage2FA), new { id = user.Id });
+            }
+
+            return RedirectToAction(nameof(Manage2FA), new { id = user.Id });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Disable2FA(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var result = await _userManager.SetTwoFactorEnabledAsync(user, false);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return RedirectToAction(nameof(Manage2FA), new { id = user.Id });
+            }
+
+            return RedirectToAction(nameof(Manage2FA), new { id = user.Id });
+        }
 
     }
 }
