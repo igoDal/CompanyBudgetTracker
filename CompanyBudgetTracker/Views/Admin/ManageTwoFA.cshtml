@@ -1,0 +1,28 @@
+@model ManageTwoFAViewModel
+
+<h2>Manage Two-Factor Authentication for @Model.Email</h2>
+
+<div class="form-group">
+    <label>Email:</label>
+    <span>@Model.Email</span>
+</div>
+
+<div class="form-group">
+    <label>Status:</label>
+    <span>@(Model.Is2FAEnabled ? "Enabled" : "Disabled")</span>
+</div>
+
+@if (Model.Is2FAEnabled)
+{
+    <form asp-action="Disable2FA" asp-route-id="@Model.UserId" method="post">
+        <button type="submit" class="btn btn-danger">Disable Two-Factor Authentication</button>
+    </form>
+}
+else
+{
+    <form asp-action="Enable2FA" asp-route-id="@Model.UserId" method="post">
+        <button type="submit" class="btn btn-primary">Enable Two-Factor Authentication</button>
+    </form>
+}
+
+<a asp-action="Index" class="btn btn-secondary">Back to Users List</a>
