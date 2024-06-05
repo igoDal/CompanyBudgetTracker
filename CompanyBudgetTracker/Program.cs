@@ -24,6 +24,8 @@ builder.Services.AddScoped<CostIncomeRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICostIncomeService, CostIncomeService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<IAuditLogService, AuditLogService>();
+
 
 builder.Services.AddControllersWithViews(options =>
 {
