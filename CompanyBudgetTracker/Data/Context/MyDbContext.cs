@@ -18,6 +18,7 @@ public class MyDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<LiabilityModel> Liabilities { get; set; }
     public DbSet<AlertSetting> AlertSettings { get; set; }
     public DbSet<UserSettings> UserSettings { get; set; }
+    public DbSet<AuditLog> AuditLogs { get; set; }
     
 
 
