@@ -21,6 +21,7 @@ namespace CompanyBudgetTracker.Controllers
         private readonly IUserService _userService;
         private readonly ILogger<AdminController> _logger;
         private readonly MyDbContext _context;
+        private readonly IAuditLogService _auditLogService;
 
         public AdminController(
             MyDbContext context, 
@@ -28,7 +29,8 @@ namespace CompanyBudgetTracker.Controllers
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IUserService userService,
-            ILogger<AdminController> logger
+            ILogger<AdminController> logger,
+            IAuditLogService auditLogService
         ) : base(context, currentUserService)
         {
             _userManager = userManager;
@@ -36,6 +38,7 @@ namespace CompanyBudgetTracker.Controllers
             _userService = userService;
             _logger = logger;
             _context = context;
+            _auditLogService = auditLogService;
         }
 
         public async Task<IActionResult> Index(string searchString)
@@ -296,7 +299,7 @@ namespace CompanyBudgetTracker.Controllers
             return RedirectToAction(nameof(Index));
         }
         
-        public async Task<IActionResult> Manage2FA(string id)
+        public async Task<IActionResult> ManageTwoFA(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
@@ -333,10 +336,10 @@ namespace CompanyBudgetTracker.Controllers
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
-                return RedirectToAction(nameof(Manage2FA), new { id = user.Id });
+                return RedirectToAction(nameof(ManageTwoFA), new { id = user.Id });
             }
 
-            return RedirectToAction(nameof(Manage2FA), new { id = user.Id });
+            return RedirectToAction(nameof(ManageTwoFA), new { id = user.Id });
         }
 
         [HttpPost]
@@ -356,10 +359,16 @@ namespace CompanyBudgetTracker.Controllers
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
-                return RedirectToAction(nameof(Manage2FA), new { id = user.Id });
+                return RedirectToAction(nameof(ManageTwoFA), new { id = user.Id });
             }
 
-            return RedirectToAction(nameof(Manage2FA), new { id = user.Id });
+            return RedirectToAction(nameof(ManageTwoFA), new { id = user.Id });
+        }
+        
+        public async Task<IActionResult> AuditLogs()
+        {
+            var auditLogs = await _context.AuditLogs.OrderByDescending(a => a.Timestamp).ToListAsync();
+            return View(auditLogs);
         }
 
     }

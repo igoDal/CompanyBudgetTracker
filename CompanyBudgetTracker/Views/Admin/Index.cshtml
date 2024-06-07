@@ -28,7 +28,7 @@
                 <td>
                     <a asp-action="UserDetails" asp-route-id="@user.Id" class="btn btn-sm btn-info">Details</a>
                     <a asp-action="EditUser" asp-route-id="@user.Id" class="btn btn-sm btn-primary">Edit</a>
-                    <a asp-action="Manage2FA" asp-route-id="@user.Id" class="btn btn-sm btn-secondary">Manage 2FA</a>
+                    <a asp-action="ManageTwoFA" asp-route-id="@user.Id" class="btn btn-sm btn-secondary">Manage 2FA</a>
 
                     <form asp-action="ToggleUserStatus" asp-route-id="@user.Id" method="post" style="display:inline;">
                         <button type="submit" class="btn btn-sm btn-warning">@((user.IsActive ? "Deactivate" : "Activate"))</button>

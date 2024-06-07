@@ -1,0 +1,27 @@
+@model IEnumerable<AuditLog>
+
+<h2>Audit Logs</h2>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Action</th>
+        <th>User</th>
+        <th>Timestamp</th>
+        <th>Details</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var log in Model)
+    {
+        <tr>
+            <td>@log.Action</td>
+            <td>@log.UserName (@log.UserId)</td>
+            <td>@log.Timestamp.ToString("g")</td>
+            <td>@log.Details</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a asp-action="Index" class="btn btn-primary">Back to Users List</a>
