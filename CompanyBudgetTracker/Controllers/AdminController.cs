@@ -4,12 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using CompanyBudgetTracker.Context;
 using CompanyBudgetTracker.Enums;
 using CompanyBudgetTracker.Interfaces;
 using CompanyBudgetTracker.Models;
 using CompanyBudgetTracker.Services;
+using Microsoft.AspNetCore.Authentication;
 
 namespace CompanyBudgetTracker.Controllers
 {
@@ -369,6 +371,49 @@ namespace CompanyBudgetTracker.Controllers
         {
             var auditLogs = await _context.AuditLogs.OrderByDescending(a => a.Timestamp).ToListAsync();
             return View(auditLogs);
+        }
+        
+        public async Task<IActionResult> StartImpersonation(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            HttpContext.Session.SetString("OriginalUserId", _userManager.GetUserId(User));
+            await SignInUserAsync(user);
+            return RedirectToAction("Index", "Home");
+        }
+
+        public async Task<IActionResult> StopImpersonation()
+        {
+            var originalUserId = HttpContext.Session.GetString("OriginalUserId");
+            if (string.IsNullOrEmpty(originalUserId))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var originalUser = await _userManager.FindByIdAsync(originalUserId);
+            if (originalUser == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            HttpContext.Session.Remove("OriginalUserId");
+            await SignInUserAsync(originalUser);
+            return RedirectToAction("Index", "Home");
+        }
+
+        private async Task SignInUserAsync(ApplicationUser user)
+        {
+            var identity = new ClaimsIdentity(IdentityConstants.ApplicationScheme);
+            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
+            identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
+
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, principal);
         }
 
     }
